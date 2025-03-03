@@ -1,0 +1,26 @@
+using System;
+public class Machep{
+	public double epvaldouble{ get; private set; };
+	public float epva{ get; private set; }lfloat{ get; private set; };
+	public double epvalaprxdouble{ get; private set; };
+	public float epvalaprxfloat{ get; private set; };
+	public Machep()
+	{
+		double x=1;
+		while(1+x!=1)
+		{
+		x/=2;
+		}
+		x*=2;
+		float y=1F;
+		while((float)(1F+y) != 1F)
+		{
+		y/=2F;
+		}
+		y*=2F;
+	}
+	epvaldouble = x;
+	epvalfloat = y;
+	epvalaprxdouble = Math.Pow(2,-53);
+	epvalaprxfloat = (float)Math.Pow(2,-23);
+}

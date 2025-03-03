@@ -1,0 +1,21 @@
+my max int = 2147483647
+
+actual max int is 2147483647
+my min int = -2147483648
+
+actual min int is -2147483648
+Machine epsilon for a float is 1.192093E-07
+Machine epsilon for a double is 2.22044604925031E-16
+Machine epsilon should be for a float 1.192093E-07
+Machine epsilon should be for a double 2.22044604925031E-16
+Machine epsilon should be for a double 2.22044604925031E-16
+machep.a==machep.b ? False
+
+machep.a>1  ? False
+
+machep.b>1  ? True
+
+If no approximation is used d1==d2 ? False
+
+If approximation is used d1==d2 ? True
+

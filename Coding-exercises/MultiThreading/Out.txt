@@ -1,0 +1,16 @@
+Harmonic sum up to 100000000 is 18.9978964138526 using 1 threads
+real 0.69
+user 0.31
+sys 0.14
+Harmonic sum up to 100000000 is 18.997896393853 using 2 threads
+real 0.35
+user 0.40
+sys 0.04
+Harmonic sum up to 100000000 is 18.9978963688495 using 3 threads
+real 0.35
+user 0.54
+sys 0.05
+Harmonic sum up to 100000000 is 18.9978963405166 using 4 threads
+real 0.30
+user 0.60
+sys 0.00

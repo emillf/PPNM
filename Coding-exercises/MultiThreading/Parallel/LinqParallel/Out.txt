@@ -1,0 +1,4 @@
+Harmonic sum up to 100000000 is 18.9978964138541 using automatic local linear quadratic threading
+real 0.78
+user 3.48
+sys 0.13

@@ -1,0 +1,8 @@
+Square root of i: (0.707106781186548, 0.707106781186547)
+Square root of -1: (0, 1)
+Exponential of i: (0.54030230586814, 0.841470984807897)
+Exponential of i*pi: (-1, 1.22460635382238E-16)
+i raised to the power of i: (0.207879576350762, 0)
+Natural log of i: (0, 1.5707963267949)
+Sin of i*pi: (0, 11.5487393572577)
+i^i manually calculated = i^i in complex? True
