@@ -206,6 +206,16 @@ public matrix transpose(){
 	return c;
 	}
 
+public static matrix random(int n, int m, Random rnd){
+	var mat = new matrix(n,m);
+	for(int i=0;i<n;i++){
+		for(int j=0;j<m;j++){
+			mat[i,j] = rnd.NextDouble();
+		}
+	}
+	return mat;
+}
+
 public static void scale(matrix M,double x){
 	for(int j=0;j<M.size2;j++)
 	for(int i=0;i<M.size1;i++)
@@ -237,7 +247,8 @@ public bool approx(matrix B,double acc=1e-6, double eps=1e-6){
 			if(!approx(this[i,j],B[i,j],acc,eps))
 				return false;
 	return true;
-public static class QR{
+	}
+private static class QR{
 	public static (matrix,matrix) decomp(matrix A){
 		matrix Q=A.copy();
 		matrix R=new matrix(A.size2,A.size2);
@@ -245,7 +256,7 @@ public static class QR{
 			R[i,i]=Q[i].norm();
 			Q[i]/=R[i,i];
 			for(int j =i+1;j<A.size2;j++){
-				R[i,j]=Q[i].dot(Q(j));
+				R[i,j]=Q[i].dot(Q[j]);
                                 Q[j]-=Q[i]*R[i,j];
                                 }
                         }
@@ -253,15 +264,16 @@ public static class QR{
 		}
 	public static vector solve(matrix Q, matrix R, vector b){
 		var c = Q.T*b;
-		var U = R.copy()
-		for (int i=c.size −1; i >=0; i−−){
+		var U = R.copy();
+		for(int i=c.size -1; i >=0; i--){
 			double sum=0;
 			for (int k=i +1; k<c.size; k++){
 				sum+=U[i,k]*c[k];
-				c[i]=(c[i]−sum)/U[i,i];
-                                }
+				}
+			c[i]=(c[i]-sum)/U[i,i];
                         }
 		return c;
+		}
         public static double det(matrix R){
 		double diag=1;
 		double antidiag=1;
@@ -279,8 +291,9 @@ public static class QR{
 		   unit[i] = 1;
 		   Ainv[i] = solve(Q,R,unit);
 		   unit[i] = 0;
-	   }
+	   	}
 	   return Ainv;
+	}
 	}//QR
 
 }//matrix

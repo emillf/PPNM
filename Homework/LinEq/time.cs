@@ -1,7 +1,6 @@
 using System;
-using static System.Console;
 public static class QR{
-        public static (matrix,matrix) decomp(matrix A){
+	public static (matrix,matrix) decomp(matrix A){
                 matrix Q=A.copy();
                 matrix R=new matrix(A.size2,A.size2);
                 for(int i=0;i<A.size2; i++){
@@ -24,12 +23,12 @@ public static class QR{
                         }
                 return c;
                 }
-   	public static double det(matrix R){
+        public static double det(matrix R){
                 double diag=1;
                 for(int i=0; i<R.size2;i++){
                         diag*=R[i,i];
                         }
-                return diag;
+ 		return diag;
                 }
         public static matrix inverse(matrix Q,matrix R){
            int n = Q.size1;
@@ -43,47 +42,20 @@ public static class QR{
            return Ainv;
         }
 }
-public class Program{
-	static void Main(){
-        	var rnd = new Random(3);
-		var A = matrix.random(7,3,rnd);
-		A.print("Random matrix A");
-		WriteLine($" A decomposed into Q and R gives: /n");
-		var QRtup =QR.decomp(A);
-		matrix Q = QRtup.Item1;
-		matrix R = QRtup.Item2;
-		Q.print("Q =");
-		R.print("R =");
-		bool AeqQR=A.approx(Q*R);
-		matrix prod = Q*R;
-		prod.print("QR =");
-		WriteLine($"QR = A? {AeqQR} /n");
-		matrix QTQ = Q.T*Q;
-		QTQ.print("Q^T Q =");
-		WriteLine("Now lets check if solve works");
-		WriteLine("Our random symmetric matrix and vector respectively:");
-		var B = matrix.random(5,5,rnd);
-		var b = vector.random(5,rnd);
-		B.print("B = ");
-		b.print("b = ");
-		WriteLine("Solving Ax=b using QR decomp gives us");
-		var QRtupnew = QR.decomp(B);
-		matrix Qnew = QRtupnew.Item1;
-		matrix Rnew = QRtupnew.Item2;
-		Qnew.print("Q = ");
-		Rnew.print("R = ");
-		vector x = QR.solve(Qnew,Rnew,b);
-		WriteLine("Solving QRx=b we get: x =");
-		x.print();
-		var Bxprod =B*x;
-		WriteLine("With Bx =");
-		Bxprod.print();
-		bool Bxeqb = b.approx(Bxprod);
-		WriteLine($"Bx = b ? {Bxeqb}");
-		WriteLine("We find the inverse of the same matrix B ");
-		var Binv = QR.inverse(Qnew,Rnew);
-		var BBinv = B*Binv;
-		Binv.print("B^(-1) = ");
-		BBinv.print("BB^(-1) = ");
+public class Time{
+	static int Main(string[] args){
+		var rnd = new Random(3);
+                int N = 5;
+		foreach(var arg in args){
+			string[] words = arg.Split(":");
+			if(words[0]=="-size") N = int.Parse(words[1]);
+			}
+		matrix A = matrix.random(N,N,rnd);
+		var QRtup = QR.decomp(A);
+		var Q = QRtup.Item1;
+		var R = QRtup.Item2;
+		Q.print();
+		R.print();
+		return 1;
 		}
 	}

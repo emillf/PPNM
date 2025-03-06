@@ -147,5 +147,11 @@ public bool approx(vector o){
 		if(!approx(this[i],o[i]))return false;
 	return true;
 	}
-
+public static vector random(int n, Random rnd){
+        vector vec = new vector(n);
+        for(int i=0;i<n;i++){
+                vec[i] = rnd.NextDouble();
+        }
+        return vec;
+}
 }//vector
