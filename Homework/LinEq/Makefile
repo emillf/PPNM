@@ -1,8 +1,11 @@
 libs = ../matlib
 	
-CSS = $(filter %.cs,$^) 
+CSS = $(filter %.cs,$^)
+	 
 LIBS = $(addprefix -reference:, $(filter %.dll,$^))
+	
 MKEXE = mcs -target:exe -out:$@ $(LIBS) $(CSS)
+	
 MKLIBS = mcs -target:library -out:$@ $(CSS)
 	
 default: Out.txt
