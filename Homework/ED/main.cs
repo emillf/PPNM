@@ -15,8 +15,8 @@ public static class jacobi{
 		for(int j =0;j<A.size2;j++){
 			double apj = A[p,j];
 			double aqj = A[q,j];
-			A[p,j]=c*apj+s*aqj;
-			A[q,j]=-s*apj+c*aqj;
+			A[p,j]=c*apj-s*aqj;
+			A[q,j]=s*apj+c*aqj;
 			}
 		}
 
@@ -73,20 +73,23 @@ class Program{
 		Console.WriteLine($"Lets do eigenvalue decomposition");
 		var tups = jacobi.cyclic(A);
 		var Adiag=tups.Item1;
+		Adiag.print("A after using the algorithm:");
 		var w=tups.Item2;
 		var V=tups.Item3;
 		var VT=V.T;
 		var VTV=VT*V;
 		var VVT=V*VT;
 		var VTAV =V.T*A*V;
-		var VDVT=V*VTAV*VT;
+		var VDVT=V*Adiag*VT;
 		VTV.print("V^(T)*V =");
 		VVT.print("V*V^(T) =");
-		Adiag.print("D = ");
 		w.print("w = ");
 		VDVT.print("VDV^(T)=");
-		bool check = VDVT.approx(A);
-		Console.WriteLine($"VDV^(T) = A? {check}");
+		VTAV.print("V^TAV=");
+		bool check1 = VDVT.approx(A);
+		bool check2 = VTAV.approx(Adiag);
+		Console.WriteLine($"VDV^(T) = A? {check1}");
+		Console.WriteLine($"V^(T)AV = D? {check2}");
 		}
 	}
 
