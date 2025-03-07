@@ -15,18 +15,78 @@ public static class jacobi{
 		for(int j =0;j<A.size2;j++){
 			double apj = A[p,j];
 			double aqj = A[q,j];
-			A[p,j]=c*apj-s*aqj;
-			A[q,j]=s*apj+c*aqj;
+			A[p,j]=c*apj+s*aqj;
+			A[q,j]=-s*apj+c*aqj;
 			}
 		}
 
-	public static (vector,matrix) cyclic(matrix M){
+	public static (matrix M,vector w, matrix V) cyclic(matrix M){
 		matrix A=M.copy();
 		matrix V=matrix.id(M.size1);
 		vector w=new vector(M.size1);
-		for(int i =
-		/* run Jacobi rotations on A and update V */
-		/* copy diagonal elements into w */
-		return (w,V);
+		bool changed;
+		double tolerance = Pow(10,-18);
+		int maxIterations = 100;
+		int iteration = 0;
+		do{
+			double[] diagOld = new double[A.size1];
+			for (int i = 0; i < A.size1; i++){
+				diagOld[i] = A[i, i];
+        			}
+			changed = false;
+			for(int p = 0;p<A.size1-1;p++){
+				for(int q=p+1;q<A.size1;q++){
+					double apq=A[p,q];
+					double aqq=A[q,q];
+					double app=A[p,p];
+					if(Abs(apq)>tolerance)
+						{
+						double theta=0.5*Atan2(2*apq,aqq-app);
+						timesJ(A,p,q,theta);
+						Jtimes(A,p,q,theta);
+						timesJ(V,p,q,theta);
+						A[p,q]=0;
+						A[q,p]=0;
+						}
+					}
+				}
+			for (int i = 0; i < A.size1; i++){
+				if (Abs(A[i, i]-diagOld[i])>tolerance)
+					{
+                			changed = true;
+                			break;
+            				}
+        			}
+		iteration++;
+		}while(changed && iteration<maxIterations);
+		for(int i = 0 ;i<A.size1;i++){
+			w[i]=A[i,i];
+			}
+		return (A,w,V);
 		}
 	}
+class Program{
+	static void Main(){
+		var rnd = new Random(299);
+		var A = matrix.symrandom(5,rnd);
+		A.print("A random symmetric matrix A");
+		Console.WriteLine($"Lets do eigenvalue decomposition");
+		var tups = jacobi.cyclic(A);
+		var Adiag=tups.Item1;
+		var w=tups.Item2;
+		var V=tups.Item3;
+		var VT=V.T;
+		var VTV=VT*V;
+		var VVT=V*VT;
+		var VTAV =V.T*A*V;
+		var VDVT=V*VTAV*VT;
+		VTV.print("V^(T)*V =");
+		VVT.print("V*V^(T) =");
+		Adiag.print("D = ");
+		w.print("w = ");
+		VDVT.print("VDV^(T)=");
+		bool check = VDVT.approx(A);
+		Console.WriteLine($"VDV^(T) = A? {check}");
+		}
+	}
+
