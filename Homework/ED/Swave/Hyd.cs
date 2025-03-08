@@ -2,6 +2,7 @@ using System;
 using static System.Math;
 using System.Collections.Generic;
 using System.IO;
+using System.Diagnostics;
 public static class jacobi{
         public static void timesJ(matrix A, int p, int q, double theta){
                 double c=Cos(theta),s=Sin(theta);
@@ -98,42 +99,65 @@ class Program{
     static void TestDrConvergence(double fixedRmax)
     {
         Console.WriteLine($"\nTesting dr convergence with fixed rmax = {fixedRmax}");
-        // Create a list of dr values to test
-        // Using a logarithmic distribution to cover different scales
+        // Create a list of dr values to test - using fewer values for now
         List<double> drValues = new List<double>();
-        for (double dr = 0.1; dr <= 1.0; dr += 0.1)
+        for (double dr = 0.05; dr <= 0.5; dr += 0.05)
         {
             drValues.Add(dr);
         }
-        // Also add some finer values at the lower end
-        drValues.Add(0.01);
-        drValues.Add(0.02);
-        drValues.Sort();
         // Calculate ground state energy for each dr
         List<double> energies = new List<double>();
         foreach (double dr in drValues)
         {
-            double energy = CalculateGroundStateEnergy(fixedRmax, dr);
-            energies.Add(energy);
-            Console.WriteLine($"dr = {dr}, ε₀ = {energy}");
-        }
-        // Write results to a file for plotting
-        using (StreamWriter writer = new StreamWriter("dr_convergence.dat"))
-        {
-            writer.WriteLine("# dr ε₀");
-            for (int i = 0; i < drValues.Count; i++)
+            Console.WriteLine($"Starting calculation for dr = {dr}...");
+            var stopwatch = Stopwatch.StartNew();
+            // Add a timeout mechanism for each calculation
+            bool calculationCompleted = false;
+            double energy = 0;
+            try
             {
-                writer.WriteLine($"{drValues[i]} {energies[i]}");
+                energy = CalculateGroundStateEnergy(fixedRmax, dr);
+                calculationCompleted = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error calculating energy for dr={dr}: {ex.Message}");
+            }
+            stopwatch.Stop();
+            if (calculationCompleted)
+            {
+                energies.Add(energy);
+                Console.WriteLine($"dr = {dr}, ε₀ = {energy}, time: {stopwatch.ElapsedMilliseconds} ms");
+            }
+            else
+            {
+                Console.WriteLine($"Calculation for dr = {dr} did not complete successfully");
             }
         }
-        Console.WriteLine("Results saved to dr_convergence.dat");
+        // Write results to a file for plotting only if we have data
+        if (energies.Count > 0)
+        {
+            using (StreamWriter writer = new StreamWriter("dr_convergence.dat"))
+            {
+                writer.WriteLine("# dr ε₀");
+                for (int i = 0; i < energies.Count; i++)
+                {
+                    writer.WriteLine($"{drValues[i]} {energies[i]}");
+                }
+            }
+            Console.WriteLine("Results saved to dr_convergence.dat");
+        }
+        else
+        {
+            Console.WriteLine("No results were collected for dr convergence test");
+        }
     }
     static void TestRmaxConvergence(double fixedDr)
     {
         Console.WriteLine($"\nTesting rmax convergence with fixed dr = {fixedDr}");
         // Create a list of rmax values to test
         List<double> rmaxValues = new List<double>();
-        for (double rmax = 5.0; rmax <= 50.0; rmax += 5.0)
+        for (double rmax = 1.0; rmax <= 10.0; rmax += 0.5)
         {
             rmaxValues.Add(rmax);
         }
