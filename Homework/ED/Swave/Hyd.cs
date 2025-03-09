@@ -73,6 +73,7 @@ class Program{
 		double rmax=10;
 		double dr=0.3;
 		string mode = "both";
+		bool plotWaveFuncs= true;
         	for (int i = 0; i < args.Length; i++){
             		if (args[i] == "-rmax" && i+1 < args.Length){
                 		rmax = double.Parse(args[i+1]);
@@ -82,18 +83,26 @@ class Program{
                 		dr = double.Parse(args[i+1]);
                 		i++;
             			}
-            	else if (args[i] == "-mode" && i+1 < args.Length){
-                	mode = args[i+1].ToLower();
-                	i++;
+            		else if (args[i] == "-mode" && i+1 < args.Length){
+                		mode = args[i+1].ToLower();
+                		i++;
             		}
+			else if (args[i] =="-wavefuncs")
+			{
+				plotWaveFuncs = true;
+				i++;
+			}
         	}
-        Console.WriteLine($"Running with rmax={rmax}, dr={dr}, mode={mode}");
+        Console.WriteLine($"Running with rmax={rmax}, dr={dr}, and plotting wavefunctions mode={mode}");
         if (mode == "dr" || mode == "both"){
             TestDrConvergence(rmax);
         }
         if (mode == "rmax" || mode == "both"){
             TestRmaxConvergence(dr);
         }
+	if (plotWaveFuncs){
+		PlotWaveFuncs(rmax,dr);
+	}
         return 0;
     }
     static void TestDrConvergence(double fixedRmax)
@@ -198,5 +207,28 @@ class Program{
 		double eps_0=Evals[0];
 		return eps_0;
 		}
+static void PlotWaveFuncs(double rmax, double dr){
+	int npoints =(int)(rmax/dr)-1;
+        vector r = new vector(npoints);
+        for(int i=0;i<npoints;i++)r[i]=dr*(i+1);
+        matrix H = new matrix(npoints,npoints);
+        for(int i=0;i<npoints-1;i++){
+        	H[i,i]  =-2*(-0.5/dr/dr);
+       		H[i,i+1]= 1*(-0.5/dr/dr);
+                H[i+1,i]= 1*(-0.5/dr/dr);
+        	}
+        H[npoints-1,npoints-1]=-2*(-0.5/dr/dr);
+        for(int i=0;i<npoints;i++)H[i,i]+=-1/r[i];
+        var HdiagwV = jacobi.cyclic(H);
+        var Evals = HdiagwV.Item2;
+        var Evecs = HdiagwV.Item3;
+	using (StreamWriter writer = new StreamWriter("WaveFuncs.dat")){
+		writer.WriteLine("# r psi_0 psi_1");
+			for(int j=0;j<npoints;j++){
+				double psi0=Evecs[j,0]/Sqrt(dr);
+				double psi1=Evecs[j,1]/Sqrt(dr);
+				writer.WriteLine($"{r[j]} {psi0} {psi1}");
+				}
+			}
+		}
 	}
-
