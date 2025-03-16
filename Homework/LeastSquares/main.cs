@@ -65,7 +65,7 @@ class Program{
 		var S = fit.Item2;
 		S.print("The covariance matrix:\n");
 		var lambdaErr = Sqrt(S[1,1]);
-		var aerr = Sqrt(S[0,0])/a;
+		var aerr = Sqrt(S[0,0])*a;
 		var T_12Err = lambdaErr * Log(2)/(Pow(lambda,2));
 		WriteLine($"With use of covariance matrix and error propagation, the error on T_1/2 is found as {T_12Err}");
 		WriteLine($"\nThis gives T_1/2 = {T_12} +- {T_12Err} days which is a bit outside the modern value {aerr}");

@@ -216,6 +216,17 @@ public static matrix random(int n, int m, Random rnd){
 	return mat;
 }
 
+public static matrix symrandom(int n, Random rnd){
+	var B = new matrix(n,n);
+	for(int i=0;i<n;i++){
+		for(int j=0;j<n;j++){
+			var val=rnd.NextDouble();
+			B[i,j]=val;
+			B[j,i]=val;
+		}
+	}
+	return B;
+}
 public static void scale(matrix M,double x){
 	for(int j=0;j<M.size2;j++)
 	for(int i=0;i<M.size1;i++)
@@ -248,7 +259,7 @@ public bool approx(matrix B,double acc=1e-6, double eps=1e-6){
 				return false;
 	return true;
 	}
-private static class QR{
+public static class QR{
 	public static (matrix,matrix) decomp(matrix A){
 		matrix Q=A.copy();
 		matrix R=new matrix(A.size2,A.size2);
@@ -294,6 +305,5 @@ private static class QR{
 	   	}
 	   return Ainv;
 	}
-	}//QR
-
+	}
 }//matrix

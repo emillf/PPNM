@@ -43,4 +43,4 @@ The covariance matrix:
   0.000197   5.12e-05 
 With use of covariance matrix and error propagation, the error on T_1/2 is found as 0.170393518471826
 
-This gives T_1/2 = 4.06242368851649 +- 0.170393518471826 days which is a bit outside the modern value 0.000248602872564038
+This gives T_1/2 = 4.06242368851649 +- 0.170393518471826 days which is a bit outside the modern value 5.04136007236871
