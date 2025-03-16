@@ -1,10 +1,46 @@
+Random tall matrix A
+     0.816      0.991      0.564 
+     0.412      0.012     0.0545 
+     0.698      0.449      0.472 
+     0.749      0.239       0.59 
+     0.382      0.551      0.782 
+     0.528      0.544      0.475 
+     0.785      0.863      0.348 
+ A decomposed into Q and R gives: 
+
+Q =
+     0.477      0.431     -0.177 
+     0.241     -0.487     -0.242 
+     0.408     -0.207     0.0314 
+     0.438     -0.572        0.3 
+     0.224      0.326      0.769 
+     0.309      0.138      0.125 
+     0.459      0.285     -0.461 
+R =
+      1.71       1.45       1.21 
+         0      0.693      0.202 
+         0          0      0.579 
+QR =
+     0.816      0.991      0.564 
+     0.412      0.012     0.0545 
+     0.698      0.449      0.472 
+     0.749      0.239       0.59 
+     0.382      0.551      0.782 
+     0.528      0.544      0.475 
+     0.785      0.863      0.348 
+QR = A? True 
+
+We see that R is upper triangular also, so it works as it should
 We get a = 142.403540630783 and lambda=0.170624049509978
 
 Half-life is T_1/2 = Log(2)/lambda = 4.06242368851649 days
+
 Modern value is T_1/2 = 3.631(2) days
+
 The covariance matrix:
+
    0.00125   0.000197 
   0.000197   5.12e-05 
-
 With use of covariance matrix and error propagation, the error on T_1/2 is found as 0.170393518471826
-This gives T_1/2 = 4.06242368851649 +- 0.170393518471826 days which is a bit outside the modern value
+
+This gives T_1/2 = 4.06242368851649 +- 0.170393518471826 days which is a bit outside the modern value 0.000248602872564038
