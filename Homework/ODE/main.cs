@@ -41,7 +41,7 @@ public class Program{
 		else h*=2;
 		}while(true);
 	}//driver
-	public static Main(){
+	public static int Main(){
 		Func<double, vector, vector> F = delegate(double x, vector y){
 			return new vector(y[1],-y[0]);
 			};
@@ -49,11 +49,27 @@ public class Program{
 		var (xlist,ylist) = driver(F,(0,10.0),ystart);
 		using (StreamWriter writer = new StreamWriter("Test.dat")){
         		writer.WriteLine("# xs ys");
-                		for(int i=0;i<xlist.size;i++){
-                        		double xs = xlist[i];
-					double ys = ylist[i][0];
-                                	writer.WriteLine($"{xs} {ys}");
+                	for(int i=0;i<xlist.size;i++){
+                        	double xs = xlist[i];
+				double ys = ylist[i][0];
+                                writer.WriteLine($"{xs} {ys}");
                                 		}
-                        		}
                         	}
-
+		Func<double, vector, vector> Pend = delegate(double x, vector y){
+			var theta = y[0];
+			var omega = y[1];
+			return new vector(omega,-0.25*omega-5.0*Sin(theta));
+			};
+		vector pendy0 = new vector(PI-0.1,0.0);
+		var (pendxlist,pendylist) = driver(Pend,(0,10.0),pendy0);
+		using (StreamWriter writer = new StreamWriter("Pend.dat")){
+                        writer.WriteLine("# xs ys");
+                        for(int i=0;i<pendxlist.size;i++){
+                                double xs = pendxlist[i];
+                                double ys = pendylist[i][0];
+                                writer.WriteLine($"{xs} {ys}");
+                                                }
+                                }
+		return 0;
+		}//Main
+	}//Program

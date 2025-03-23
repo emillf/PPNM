@@ -14,25 +14,38 @@ Out.txt : main.exe
 	mono $< >$@
 matrix.dll : $(libs)/matrix.cs $(libs)/vector.cs
 	$(MKLIBS)
-main.exe : main.cs matrix.dll
+genlist.dll : $(libs)/genlist.cs
+	$(MKLIBS)
+main.exe : main.cs matrix.dll genlist.dll
 	$(MKEXE)
-plot: QuadraticSpline_plot
-#	
-QuadraticSpline_plot : Vals.dat QuadraticSpline_plot.gnu
-	gnuplot QuadraticSpline_plot.gnu
-.PHONY: QuadraticSpline_plot.gnu
-QuadraticSpline_plot.gnu:
+plot: Test_plot Pendulum_plot
+	
+Test_plot : Test.dat Test_plot.gnu
+	gnuplot Test_plot.gnu
+Pendulum_plot: Pend.dat Pendulum_plot.gnu
+	gnuplot Pendulum_plot.gnu
+.PHONY: Test_plot.gnu
+Test_plot.gnu:
 	@echo "set terminal png" > $@
-	@echo "set output 'Cubic_splines.png'" >> $@
-	@echo "set title 'Quadratic spline interpolation, integration, and derivative of Sin(x)'" >> $@
+	@echo "set output 'Test_differential_equation.png'" >> $@
+	@echo "set title 'Numerical Solution of d^2u/dx^2=-u with yinit=(0,1)'" >> $@
 	@echo "set xlabel 'x'" >> $@
 	@echo "set ylabel 'y'" >> $@
 	@echo "set grid" >> $@
 	@echo "set key top right" >> $@
-	@echo "set xrange [0:8]" >> $@
-	@echo "set yrange [-1.5:1.5]" >> $@
-	@echo "plot 'Vals.dat' using 1:2 with lines title 'Cubic spline of Sin(x)', \\" >> $@
-	@echo "     'Vals.dat' using 1:3 with lines title 'Cubic spline integration of Sin(x) (-Cos(x))', \\" >> $@
-	@echo "     'Vals.dat' using 1:2 smooth csplines title 'Gnuplots own quadratic spline implimentation', \\" >> $@
+	@echo "set xrange [*:*]" >> $@
+	@echo "set yrange [*:*]" >> $@
+	@echo "plot 'Test.dat' using 1:2 with lines title 'u', \\" >> $@
+Pendulum_plot.gnu:
+	@echo "set terminal png" > $@
+	@echo "set output 'Pendulum_with_friction.png'" >> $@
+	@echo "set title 'Numerical Solution to pendulum with friction differential equation from scipy odeint'" >> $@
+	@echo "set xlabel 'x'" >> $@
+	@echo "set ylabel 'y'" >> $@
+	@echo "set grid" >> $@
+	@echo "set key top right" >> $@
+	@echo "set xrange [*:*]" >> $@
+	@echo "set yrange [*:*]" >> $@
+	@echo "plot 'Pend.dat' using 1:2 with lines title 'theta(t)', \\" >> $@
 clean:
 	$(RM) *.exe *.dll *.png *.gnu *.log [Oo]ut* [Ll]og* [Ee]rr
