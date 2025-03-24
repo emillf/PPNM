@@ -57,8 +57,8 @@ Orbit_plot.gnu:
 	@echo "set ylabel 'y'" >> $@
 	@echo "set grid" >> $@
 	@echo "set key top right" >> $@
-	@echo "set xrange [*:*]" >> $@
-	@echo "set yrange [*:*]" >> $@
+	@echo "set xrange [-2.5:2.5]" >> $@
+	@echo "set yrange [-2.5:2.5]" >> $@
 	@echo "plot 'Orbit.dat' using 1:2 with lines title 'ε = 0, Circular', \\" >> $@
 	@echo "     'Orbit.dat' using 3:4 with lines title 'ε = 0, Elliptical', \\" >> $@
 	@echo "     'Orbit.dat' using 5:6 with lines title 'ε = 0.01, Elliptical'" >> $@

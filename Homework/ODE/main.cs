@@ -21,11 +21,13 @@ public class Program{
 	vector yinit,                /* y(initial-point) */
 	double h=0.125,              /* initial step-size */
 	double acc=0.01,             /* absolute accuracy goal */
-	double eps=0.01, double adj=1.5              /* relative accuracy goal */
+	double eps=0.01, double adj=1.5,              /* relative accuracy goal */
+	bool writeh=false
 	){
 	var (a,b)=interval; double x=a; vector y=yinit.copy();
 	var xlist=new genlist<double>(); xlist.add(x);
 	var ylist=new genlist<vector>(); ylist.add(y);
+	double hmax =(b-a)/500;
 	do{
 		if(x>=b) return (xlist,ylist); /* job done */
 		if(x+h>b) h=b-x;               /* last step should end at b */
@@ -37,8 +39,12 @@ public class Program{
 			xlist.add(x);
 			ylist.add(y);
 			}
-		if(err>0) h *= Min( Pow(tol/err,0.25)*0.95 , adj); // readjust stepsize
-		else h*=2;
+		if(err>0){
+			double factor = Min( Pow(tol/err,0.25)*0.95 , adj); // readjust stepsize
+			h=Min(h*factor,hmax); //enforce minimum step length
+			}
+		else h=Min(h*2,hmax); //enforce minimum step length
+		if(writeh==true) System.Console.WriteLine($"{h}");
 		}while(true);
 	}//driver
 	public static int Main(){
@@ -85,7 +91,7 @@ public class Program{
                 Func<double, vector, vector> Orbiteps3 =delegate(double x, vector y){
                         return new vector(y[1],1-y[0]+eps3*y[0]*y[0]);
                 };
-		var (Orbiteps1xlist,Orbiteps1ylist) = driver(Orbiteps1,(0,10*2*PI),yinit1,adj:1.01);
+		var (Orbiteps1xlist,Orbiteps1ylist) = driver(Orbiteps1,(0,10*2*PI),yinit1,eps:1e-6,h:10*2*PI/500,acc:1e-6,writeh:true);
                 var (Orbiteps2xlist,Orbiteps2ylist) = driver(Orbiteps2,(0,10*2*PI),yinit2);
                 var (Orbiteps3xlist,Orbiteps3ylist) = driver(Orbiteps3,(0,10*2*PI),yinit3);
                 using (StreamWriter writer = new StreamWriter("Orbit.dat")){
@@ -93,8 +99,10 @@ public class Program{
                         for(int i=0;i<Orbiteps1xlist.size;i++){
                                 double x1t = Orbiteps1xlist[i];
                                 double y1t = Orbiteps1ylist[i][0];
-				double x1r = 1/y1t*Cos(x1t);
-				double y1r = 1/y1t*Sin(x1t);
+				//double x1r = 1/y1t*Cos(x1t);
+				//double y1r = 1/y1t*Sin(x1t);
+				double x1r = y1t != 0 ? Cos(x1t)/y1t : double.NaN;
+            			double y1r = y1t != 0 ? Sin(x1t)/y1t : double.NaN;
 				writer.WriteLine($"{x1r} {y1r} {double.NaN} {double.NaN} {double.NaN} {double.NaN}");
 				}
                         for(int i=0;i<Orbiteps3xlist.size;i++){
