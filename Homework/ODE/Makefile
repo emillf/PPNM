@@ -18,12 +18,14 @@ genlist.dll : $(libs)/genlist.cs
 	$(MKLIBS)
 main.exe : main.cs matrix.dll genlist.dll
 	$(MKEXE)
-plot: Test_plot Pendulum_plot
+plot: Test_plot Pendulum_plot Orbit_plot
 	
 Test_plot : Test.dat Test_plot.gnu
 	gnuplot Test_plot.gnu
 Pendulum_plot: Pend.dat Pendulum_plot.gnu
 	gnuplot Pendulum_plot.gnu
+Orbit_plot : Orbit.dat Orbit_plot.gnu
+	gnuplot Orbit_plot.gnu
 .PHONY: Test_plot.gnu
 Test_plot.gnu:
 	@echo "set terminal png" > $@
@@ -46,6 +48,19 @@ Pendulum_plot.gnu:
 	@echo "set key top right" >> $@
 	@echo "set xrange [*:*]" >> $@
 	@echo "set yrange [*:*]" >> $@
-	@echo "plot 'Pend.dat' using 1:2 with lines title 'theta(t)', \\" >> $@
+	@echo "plot 'Pend.dat' using 1:2 with lines title '{\Symbol theta}(t)', \\" >> $@
+Orbit_plot.gnu:
+	@echo "set terminal png" > $@
+	@echo "set output 'Planetary_precession.png'" >> $@
+	@echo "set title 'Numerical calculation of planetary precession per general relativity'" >> $@
+	@echo "set xlabel 'x'" >> $@
+	@echo "set ylabel 'y'" >> $@
+	@echo "set grid" >> $@
+	@echo "set key top right" >> $@
+	@echo "set xrange [*:*]" >> $@
+	@echo "set yrange [*:*]" >> $@
+	@echo "plot 'Orbit.dat' using 1:2 with lines title 'ε = 0, Circular', \\" >> $@
+	@echo "     'Orbit.dat' using 3:4 with lines title 'ε = 0, Elliptical', \\" >> $@
+	@echo "     'Orbit.dat' using 5:6 with lines title 'ε = 0.01, Elliptical'" >> $@
 clean:
 	$(RM) *.exe *.dll *.png *.gnu *.log [Oo]ut* [Ll]og* [Ee]rr

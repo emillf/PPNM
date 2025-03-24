@@ -7,4 +7,4 @@ set grid
 set key top right
 set xrange [*:*]
 set yrange [*:*]
-plot 'Pend.dat' using 1:2 with lines title 'theta(t)', \
+plot 'Pend.dat' using 1:2 with lines title '{\Symbol theta}(t)', \
