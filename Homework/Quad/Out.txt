@@ -10,3 +10,40 @@ We use a default absolute and relative accuracy of 0.001. All integrals are from
 
 ∫ dx ln(x)/√(x) = -3.99991705899915 is within accuracy limits of -4? True
 
+
+ Part b) 
+ 
+ Lets compare our integrator with Clenshaw Curtis variable transformation and our normal integrator
+
+∫ dx 1/√(x) = 1.99999201046432 with calls 15 compared to 8571 from our normal integrator
+
+∫ dx ln(x)/√(x) = -3.99987385646141 with calls 95 compared to 8603 from our normal integrator
+
+So much fewer evaluations using the Clenshaw Curtis method
+
+Scipy needed 213(315) calls for the first(second) integral
+
+
+ Now lets test our integrator on some converging infinite limit integrals
+
+(from -∞ to ∞) ∫ dx Exp(-x²) = 1.77240327618564 which is approximately √π=1.77245385090552 (79 calls)
+
+(from -∞ to 1) ∫ dx 1/x² = 0.999978183833389 which is approximately 1 (23 calls)
+
+(from 0 to ∞) ∫ dx Exp(-x) = 0.998396771291765 which is approximately 1 (31 calls)
+
+
+ Part c) 
+
+We check some difficult integrals and their error
+First lets check the (in)famous Cleo integral see ( https://en.wikipedia.org/wiki/Cleo_(mathematician) )
+
+(from -1 to 1) ∫ dx 1/x*Sqrt((1+x)/(1-x))*Log((2*x*x+2*x+1)/(2*x*x-2*x+1))=8.37239879111197+-0.00181210539814698. 
+ 
+ The true error is 0.000187164510697002 compared to 4π*arccot(√ϕ)
+
+(from 0 to ∞) ∫ dx 1/(4+x²) = 0.785804429640761+-0.000899866691354792 The true error is 0.000406266243312303 compared to π/4 
+
+(from -∞ to ∞) ∫ dx exp(x)/(exp(2x)+1) = 1.56940937612008+-0.000935459873627425 The true error is 0.00138695067481853 compared to π/2
+
+ So the error estimation is fairly high quality it seems
