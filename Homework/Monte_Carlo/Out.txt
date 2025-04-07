@@ -1,0 +1,9 @@
+Part a)
+ We do integrals using our plain montecarlo integration:
+ 
+ First we check the area of the unit circle using 10000 points
+
+(from θ=0 to θ=2π and r=0 to r=1) ∫∫rdxdθ = 3.11877215482571+-0.0180915236370186
+
+The plot shows that the error does indeed scale approximately as 1/sqrt(N)
+
