@@ -4,6 +4,7 @@ set title 'Area of unit circle with error estimate as function of Npoints in pla
 set xlabel 'Npoints'
 set ylabel 'Area'
 set grid
+set xrange [-1:25001]
 set multiplot layout 1,2 rowsfirst
 plot 'Vals1.dat' using 1:2 with points pointtype 6 title 'Estimated error', \
      'Vals1.dat' using 1:3 with points pointtype 2 title 'Exact error', \

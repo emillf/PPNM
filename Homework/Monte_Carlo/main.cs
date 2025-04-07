@@ -26,8 +26,16 @@ public class Program{
 		var Aunitcircle = plainmc(unitcircle,a1,b1,npoints1);
                 WriteLine($" First we check the area of the unit circle using {npoints1} points\n");
 		WriteLine($"(from θ=0 to θ=2π and r=0 to r=1) ∫∫rdxdθ = {Aunitcircle.Item1}+-{Aunitcircle.Item2}\n");
-		WriteLine($"The plot shows that the error does indeed scale approximately as 1/sqrt(N)\n");
-                using (StreamWriter writer = new StreamWriter("Vals1.dat")){
+		WriteLine($"The plot shows that the error scale very roughly as 1/sqrt(N)\n \n");
+		int npoints2 = 1000000;
+		WriteLine($"Now lets do the very difficult singular integral (here called I) using {npoints2} points\n");
+                Func<vector,double> difffunc = v => 1/Pow(PI,3)*1/(1-Cos(v[0])*Cos(v[1])*Cos(v[3]));
+		vector a2= new vector(0,0,0);
+		vector b2= new vector(PI,PI,PI);
+		var diffval = plainmc(difffunc,a2,b2,npoints2);
+		WriteLine($"This gives I={diffval.Item1}+-{diffval.Item2}\n");
+		WriteLine($"The real error is {1.39320392-diffval.Item1}\n");
+		using (StreamWriter writer = new StreamWriter("Vals1.dat")){
                 	writer.WriteLine("# npoints err reerr errscal piapx pire ");
 			int Nmax = 25000;
                 	for(int N=0;N<Nmax;N+=500){
@@ -35,7 +43,7 @@ public class Program{
                         	double npoints = N ;
                         	double err = inte.Item2;
 				double errscal = 1/Sqrt(N);
-				double reerr = Abs(err-PI);
+				double reerr = Abs(inte.Item1-PI);
 				double piapx = inte.Item1;
 				double pire = PI;
                         	writer.WriteLine($"{npoints} {err} {reerr} {errscal} {piapx} {pire}");
