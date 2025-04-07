@@ -29,7 +29,7 @@ public class Program{
 		WriteLine($"The plot shows that the error scale very roughly as 1/sqrt(N)\n \n");
 		int npoints2 = 1000000;
 		WriteLine($"Now lets do the very difficult singular integral (here called I) using {npoints2} points\n");
-                Func<vector,double> difffunc = v => 1/Pow(PI,3)*1/(1-Cos(v[0])*Cos(v[1])*Cos(v[3]));
+                Func<vector,double> difffunc = v => 1/Pow(PI,3)*1/(1-Cos(v[0])*Cos(v[1])*Cos(v[2]));
 		vector a2= new vector(0,0,0);
 		vector b2= new vector(PI,PI,PI);
 		var diffval = plainmc(difffunc,a2,b2,npoints2);

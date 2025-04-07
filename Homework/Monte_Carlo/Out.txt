@@ -3,10 +3,14 @@ Part a)
  
  First we check the area of the unit circle using 10000 points
 
-(from θ=0 to θ=2π and r=0 to r=1) ∫∫rdxdθ = 3.14414545758579+-0.0181774798750723
+(from θ=0 to θ=2π and r=0 to r=1) ∫∫rdxdθ = 3.14313642175795+-0.0182195209309589
 
 The plot shows that the error scale very roughly as 1/sqrt(N)
  
 
-Now lets do the very difficult singular integral (here called I) using 10000 points
+Now lets do the very difficult singular integral (here called I) using 1000000 points
+
+This gives I=1.39318437665501+-0.00807823605363756
+
+The real error is 1.95433449885485E-05
 
