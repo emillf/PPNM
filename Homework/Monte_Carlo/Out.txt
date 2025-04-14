@@ -3,14 +3,25 @@ Part a)
  
  First we check the area of the unit circle using 10000 points
 
-(from θ=0 to θ=2π and r=0 to r=1) ∫∫rdxdθ = 3.13568917152324+-0.0180560963497375
+(from θ=0 to θ=2π and r=0 to r=1) ∫∫rdxdθ = 3.1252419040328+-0.018050104242256
 
 The plot shows that the error scales very roughly as 1/sqrt(N)
  
 
 Now lets do the very difficult singular integral (here called I) using 1000000 points
 
-This gives I=1.38054707304722+-0.00556444018006019
+This gives I=1.3863841408204+-0.00949684379623063
 
-The real error is 0.012656846952781
+The real error is 0.0068197791795952
 
+Part B: 
+ as an example we calculate I with our (halton) quasirandom sampling using lattice sampling as error estimate
+
+using 10000 points we get I = 1.34541318065228+-0.0331833043497705
+
+ We check the error scaling of our quasirandom sampling on the same integral as our plain sampling in the plot 
+
+
+ As can be seen in the plot. Quasimc converges much quicker, and also has better error estimation
+     0.375      0.222       0.24 
+     0.813      0.704       0.28 

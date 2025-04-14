@@ -49,6 +49,7 @@ public class Program{
 		} //method
 	static void halton(int n, vector x){
 		List<int> bases = primelist(x.size);
+		n = Abs(n)+1;
 		for(int i = 0; i<x.size; i++){
 			x[i] = corput(n,bases[i]);
 			}
@@ -56,25 +57,27 @@ public class Program{
         static void lattice(int n, vector x){
                 List<double> alphas = new List<double>();
                 List<int> primes = primelist(x.size);
+		n = Abs(n)+1;
                 for(int i = 0;i<x.size;i++)alphas.Add(Sqrt(primes[i])%1);
                 for(int i = 0;i<x.size;i++)x[i]=(n*alphas[i]%1);
                 }
 	static (double,double) quasimc(Func<vector,double> f, vector a, vector b, int N, bool halt=true){
 		int dim=a.size; double V=1; for(int i=0;i<dim;i++)V*=b[i]-a[i];
                 double sum=0,sum2=0;
-                var x = new vector(dim);
+                var x1 = new vector(dim);
+		var x2 = new vector(dim);
                 var haltonvec=new vector(dim);
                 var latticevec = new vector(dim);
                 for(int i=0;i<N;i++){
 			halton(i,haltonvec);
-			for(int j = 0; j<dim; j++)x[j]=a[j]+(b[j]-a[j])*haltonvec[j];
-                        sum+=f(x);
+			for(int j = 0; j<dim; j++)x1[j]=a[j]+(b[j]-a[j])*haltonvec[j];
+                        sum+=f(x1);
                         lattice(i,latticevec);
-                        for(int k = 0; k<dim; k++)x[k]=a[k]+(b[k]-a[k])*latticevec[k];
-                        sum2+=f(x);
+                        for(int k = 0; k<dim; k++)x2[k]=a[k]+(b[k]-a[k])*latticevec[k];
+                        sum2+=f(x2);
                         }
-		double meanhalt=sum/N;
-                double meanlat=sum2/N;
+		double meanhalt=V*sum/N;
+                double meanlat=V*sum2/N;
                 double sigma = Abs(meanhalt-meanlat);
                 if(halt==true) return (meanhalt,sigma);
                 else return (meanlat,sigma);
@@ -112,13 +115,15 @@ public class Program{
                         	writer.WriteLine($"{npoints} {err} {reerr} {errscal} {piapx} {pire}");
                         	}
                 	}
-		var diffvalq = quasimc(difffunc,a2,b2,npoints1);
-		WriteLine($"Part B: \n as an example Calculating I with our (halton) quasirandom sampling using lattice as error estimate sequence using {npoints1} points we get I = {diffvalq.Item1}+-{diffvalq.Item2}");
+		var diffvalq = quasimc(difffunc,a2,b2,npoints1,halt:false);
+		WriteLine($"Part B: \n as an example we calculate I with our (halton) quasirandom sampling using lattice sampling as error estimate\n"); 
+		WriteLine($"using {npoints1} points we get I = {diffvalq.Item1}+-{diffvalq.Item2}");
 		WriteLine("\n We check the error scaling of our quasirandom sampling on the same integral as our plain sampling in the plot \n");
+		WriteLine("\n As can be seen in the plot. Quasimc converges much quicker, and also has better error estimation");
                 using (StreamWriter writer = new StreamWriter("Vals2.dat")){
                         writer.WriteLine("# npoints errplain rerrplain errscalplain errquasi reerrquasi");
-                        int Nmax = 25000;
-                        for(int N=0;N<Nmax;N+=500){
+                        int Nmax = 5010;
+                        for(int N=10;N<Nmax;N+=200){
 				var intequasi = quasimc(unitcircle,a1,b1,N);
 				var inteplain = plainmc(unitcircle,a1,b1,N);
                                 double npoints = N ;
@@ -130,6 +135,11 @@ public class Program{
                                 writer.WriteLine($"{npoints} {errplain} {reerrplain} {errscalplain} {errquasi} {reerrquasi}");
                                 }
                         }
+		vector rand = new vector(3);
+		halton(5,rand);
+		rand.print();
+		halton(10,rand);
+		rand.print();
 		return 0;
 	}//Main
 }//Program

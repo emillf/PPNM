@@ -48,7 +48,7 @@ errscal_plot.gnu:
 	@echo "set xlabel 'Npoints'" >> $@
 	@echo "set ylabel 'Error in area'" >> $@
 	@echo "set grid" >> $@
-	@echo "set xrange [-1:25001]" >> $@
+	@echo "set xrange [0:5001]" >> $@
 	@echo "set multiplot layout 1,2 rowsfirst" >>$@
 	@echo "plot 'Vals2.dat' using 1:2 with points pointtype 6 title 'Estimated error plainmc', \\" >> $@
 	@echo "     'Vals2.dat' using 1:3 with points pointtype 2 title 'Exact error plainmc', \\" >> $@
