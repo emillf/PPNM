@@ -91,20 +91,24 @@ public class Program{
 		WriteLine("The plots contain an investigation of convergence of these results\n");
 		using (StreamWriter writer = new StreamWriter("Convacceps.dat")){
 			writer.WriteLine("# acct Eacct epst Eepst");
-			double accmax = 1.0;
-			double epsmax = 1.0;
+			double accmax = 0.1;
+			double epsmax = 0.1;
+			double accmin = 0.01;
+			double epsmin = 0.01;
 			double epsfix = 0.05;
 			double accfix = 0.05;
+			double rmax = 8.0;
+			double rmin = 0.05;
 			int Nmax = 100;
-			vector Einitnew = new vector(-1.0);
-			for(int N=1;N<Nmax;N++){
-				double acct=accmax/Nmax*N;
-				double epst=epsmax/Nmax*N;
-				var M_Eepst = Create_M_E(accfix,epst);
-				var M_Eacct = Create_M_E(acct,epsfix);
+			vector Einitnew = new vector(-5.0);
+			for(int N=0;N<Nmax;N++){
+				double acct=accmin+accmax/Nmax*N;
+				double epst=epsmin+epsmax/Nmax*N;
+				var M_Eepst = Create_M_E(accfix,epst,rmax,rmin);
+				var M_Eacct = Create_M_E(acct,epsfix,rmax,rmin);
 				var Eepst = newton(M_Eepst,Einitnew)[0];
 				var Eacct = newton(M_Eacct,Einitnew)[0];
-				writer.WriteLine($"{acct}{Eacct}{epst}{Eepst}");
+				writer.WriteLine($"{acct} {Eacct} {epst} {Eepst}");
 				}
 			}
 		return 1;
