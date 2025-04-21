@@ -3,7 +3,6 @@ using System.IO;
 using static System.Math;
 using static System.Console;
 using System.Collections.Generic;
-//using ODEsolver;
 public class Program{
 		static matrix jacobian(Func<vector,vector> f,vector x,vector fx=null,vector dx=null){
 			if(dx == null) dx = x.map(xi => Abs(xi)*Pow(2,-26));
@@ -30,7 +29,7 @@ public class Program{
 				matrix J=jacobian(f,x,fx,δx);
 				var QRJ = matrix.QR.decomp(J);
 				vector Dx = matrix.QR.solve(QRJ.Item1,QRJ.Item2,-fx); /* Newton's step */
-				double λ=1;
+				double λ=1.0;
 				double λmin =Pow(10,-2);
 				do{ /* linesearch */
 					z=x+λ*Dx;
@@ -43,7 +42,21 @@ public class Program{
 				}while(true);
 			return x;
 			}
-		static int Main(){
+        public static Func<vector,vector> Create_M_E(double acc=0.01,double eps=0.01,double rmax=8.0,double rmin=0.05){
+                        return (vector E) => {
+                                var FEdifinit = new vector(rmin-rmin*rmin,1-2*rmin);
+                                Func<double,vector,vector> FEdif = delegate(double x, vector y){
+                                        // We rewrite the second order differential equation to 2 first order ones by introducing u0=f' a>                                        // This gives the output equation in the form we want
+                                        var u0=y[0];
+                                        var u1=y[1];
+                                        return new vector(u1,-2*(E[0]*u0+1/x*u0));
+                                        };
+                                var F_E = ODE.driver(FEdif,(rmin,rmax),FEdifinit,acc,eps);
+                                vector M_Eres= new vector(F_E.Item2[F_E.Item2.Count-1][0]);
+                               return M_Eres;
+                               };
+                       }
+	static int Main(){
 		WriteLine($"Part A)\n");
 		WriteLine("The analytically calculated gradients of Rosenbrocks and Himmelblaus functions are found to be:\n");
 		WriteLine("∇f(x,y) = (2*(-1+x+200*x^3 - 200*x*y),200*(-x^2+y)) and ∇f(x,y) = (2*(2*x*(x^2+y-11)+x+y^2-7),2*(x^2+2*y*(x+y^2-7)+y-11)) respectively.\n");
@@ -64,28 +77,36 @@ public class Program{
 		var xstartrosen = new vector(10,10);
 		var eksRosen = newton(Rosengrad,xstartrosen);
 		eksRosen.print("The result is found to be: \n");
-		WriteLine("In line with the expected result. \n We find the minima of Himmelblaus function using the following initial guesses:");
+		WriteLine("In line with the expected result. \nWe find the minima of Himmelblaus function using the following initial guesses:");
 		for(int i=0;i<4;i++){
 			xstartHimmellist[i].print("\ninitial guess:");
 			resHimmellist[i].print("gives result:");
 			}
-		WriteLine($"\n This is also in correspondance with expected values\n");
+		WriteLine($"\nThis is also in correspondance with expected values\n");
 		WriteLine("Part B)\n");
-		double rmin = 0.05;
-		double rmax = 8.0;
-		var FEdifinit = new vector(rmin-rmin*rmin,1-2*rmin);
-		Func<vector,vector>M_E = delegate(vector E) {
-			Func<double,vector,vector> FEdif = delegate(double x, vector y){
-				//We rewrite the second order differential equation to 2 first order ones by introducing u0=f' and u1=f'')
-				// This gives the output equation in the form we want
-				var u0=y[0];
-				var u1=y[1];
-				return new vector(u1,-2*(E[0]*u0+1/x*u0));
-				};
-			var F_E = ODE.driver(FEdif,(rmin,rmax),FEdifinit);
-			var M_Eres=F_E.Item2[F_E.Item2.Count][0];
-			return M_Eres;
-			};
+		Func<vector,vector> M_E = Create_M_E();
+		vector Einit = new vector(-10.0);
+		newton(M_E,Einit).print("With initial guess E=-10 and rmin=0.05 rmax=8.0 we get the result E_0   =");
+		WriteLine("\nagain in correspondence with the expected result \n");
+		WriteLine("The plots contain an investigation of convergence of these results\n");
+		using (StreamWriter writer = new StreamWriter("Convacceps.dat")){
+			writer.WriteLine("# acct Eacct epst Eepst");
+			double accmax = 1.0;
+			double epsmax = 1.0;
+			double epsfix = 0.05;
+			double accfix = 0.05;
+			int Nmax = 100;
+			vector Einitnew = new vector(-1.0);
+			for(int N=1;N<Nmax;N++){
+				double acct=accmax/Nmax*N;
+				double epst=epsmax/Nmax*N;
+				var M_Eepst = Create_M_E(accfix,epst);
+				var M_Eacct = Create_M_E(acct,epsfix);
+				var Eepst = newton(M_Eepst,Einitnew)[0];
+				var Eacct = newton(M_Eacct,Einitnew)[0];
+				writer.WriteLine($"{acct}{Eacct}{epst}{Eepst}");
+				}
+			}
 		return 1;
 		}//Main
 	}//Program

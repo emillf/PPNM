@@ -1,5 +1,6 @@
 using static System.Math;
 using System;
+using System.Collections.Generic;
 public partial class ODE{
 	public static (vector,vector) rkstep12(
 	Func<double,vector,vector> f,/* the f from dy/dx=f(x,y) */
@@ -14,7 +15,7 @@ public partial class ODE{
 	vector δy = (k1-k0)*h;           /* error estimate */
 	return (yh,δy);
 	}
-	public static (genlist<double>,genlist<vector>) driver(
+	public static (List<double>,List<vector>) driver(
 	Func<double,vector,vector> F,/* the f from dy/dx=f(x,y) */
 	(double,double) interval,    /* (initial-point,final-point) */
 	vector yinit,                /* y(initial-point) */
@@ -24,8 +25,8 @@ public partial class ODE{
 	bool writeh=false
 	){
 	var (a,b)=interval; double x=a; vector y=yinit.copy();
-	var xlist=new genlist<double>(); xlist.add(x);
-	var ylist=new genlist<vector>(); ylist.add(y);
+	var xlist=new List<double>(); xlist.Add(x);
+	var ylist=new List<vector>(); ylist.Add(y);
 	double hmax =(b-a)/500;
 	do{
 		if(x>=b) return (xlist,ylist); /* job done */
@@ -35,8 +36,8 @@ public partial class ODE{
 		double err = δy.norm();
 		if(err<=tol){ // accept step
 			x+=h; y=yh;
-			xlist.add(x);
-			ylist.add(y);
+			xlist.Add(x);
+			ylist.Add(y);
 			}
 		if(err>0){
 			double factor = Min( Pow(tol/err,0.25)*0.95 , adj); // readjust stepsize
