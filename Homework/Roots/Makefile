@@ -14,13 +14,9 @@ default: main.exe Out.txt #plot
 	
 Out.txt : main.exe
 	mono $< >$@
-matrix.dll : $(libs)/matrix.cs $(libs)/vector.cs
+matrix.dll : $(libs)/matrix.cs $(libs)/vector.cs ode.cs genlist.cs
 	$(MKLIBS)
-ode.dll : ode.cs
-	$(MKLIBS)
-genlist.dll : $(libs)/genlist.cs
-	$(MKLIBS)
-main.exe : main.cs matrix.dll genlist.dll ode.dll
+main.exe : main.cs matrix.dll
 	$(MKEXE)
 clean:
 	$(RM) *.exe *.dll *.png *.gnu *.log [Oo]ut* [Ll]og* [Ee]rr

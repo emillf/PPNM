@@ -3,6 +3,7 @@ using System.IO;
 using static System.Math;
 using static System.Console;
 using System.Collections.Generic;
+//using ODEsolver;
 public class Program{
 		static matrix jacobian(Func<vector,vector> f,vector x,vector fx=null,vector dx=null){
 			if(dx == null) dx = x.map(xi => Abs(xi)*Pow(2,-26));
@@ -70,7 +71,21 @@ public class Program{
 			}
 		WriteLine($"\n This is also in correspondance with expected values\n");
 		WriteLine("Part B)\n");
-		
+		double rmin = 0.05;
+		double rmax = 8.0;
+		var FEdifinit = new vector(rmin-rmin*rmin,1-2*rmin);
+		Func<vector,vector>M_E = delegate(vector E) {
+			Func<double,vector,vector> FEdif = delegate(double x, vector y){
+				//We rewrite the second order differential equation to 2 first order ones by introducing u0=f' and u1=f'')
+				// This gives the output equation in the form we want
+				var u0=y[0];
+				var u1=y[1];
+				return new vector(u1,-2*(E[0]*u0+1/x*u0));
+				};
+			var F_E = ODE.driver(FEdif,(rmin,rmax),FEdifinit);
+			var M_Eres=F_E.Item2[F_E.Item2.Count][0];
+			return M_Eres;
+			};
 		return 1;
 		}//Main
 	}//Program
