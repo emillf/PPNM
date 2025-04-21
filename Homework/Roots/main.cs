@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using static System.Math;
 using static System.Console;
+using System.Collections.Generic;
 public class Program{
 		static matrix jacobian(Func<vector,vector> f,vector x,vector fx=null,vector dx=null){
 			if(dx == null) dx = x.map(xi => Abs(xi)*Pow(2,-26));
@@ -29,7 +30,7 @@ public class Program{
 				var QRJ = matrix.QR.decomp(J);
 				vector Dx = matrix.QR.solve(QRJ.Item1,QRJ.Item2,-fx); /* Newton's step */
 				double λ=1;
-				double λmin =Pow(10,-5);
+				double λmin =Pow(10,-2);
 				do{ /* linesearch */
 					z=x+λ*Dx;
 					fz=f(z);
@@ -42,17 +43,34 @@ public class Program{
 			return x;
 			}
 		static int Main(){
-		var xstarthimmel = new vector(10,10);
-		Func<vector,vector> test = x => new vector(3*x[0]*x[0],3*x[1]*x[1]);
-		Func<vector,vector> Rosengrad = x => new vector(-2*(1-x[0])-100*2*(x[1]-x[0]*x[0])*2*x[0],2*100*(x[1]-x[0]*x[0]));
-		Func<vector, vector> Himmelgrad = x => new vector(2*(x[0]*x[0]+x[1]-11)*2*x[0]+2*(x[0]+x[1]-7),2*(x[0]*x[0]+x[1]-11)+2*(x[0]+x[1]*x[1]-7)*2*x[1]);
-		var eksHimmel = newton(Himmelgrad,xstarthimmel);
-		var testres = newton(test,xstarthimmel);
-		var eksRosen = newton(Rosengrad,xstarthimmel);
-		eksHimmel.print();
-		testres.print();
-		eksRosen.print();
-		WriteLine($"{1}\n");
+		WriteLine($"Part A)\n");
+		WriteLine("The analytically calculated gradients of Rosenbrocks and Himmelblaus functions are found to be:\n");
+		WriteLine("∇f(x,y) = (2*(-1+x+200*x^3 - 200*x*y),200*(-x^2+y)) and ∇f(x,y) = (2*(2*x*(x^2+y-11)+x+y^2-7),2*(x^2+2*y*(x+y^2-7)+y-11)) respectively.\n");
+                WriteLine($"We find the extremum of Rosenbrocks valley function using the initial guess (xi,yi)=(10,10):\n");
+		List<vector> xstartHimmellist = new List<vector>();
+		List<vector> resHimmellist = new List<vector>();
+                Func<vector,vector> test = x => new vector(3*x[0]*x[0],3*x[1]*x[1]);
+                Func<vector,vector> Rosengrad = x => new vector(-2*(1-x[0])-100*2*(x[1]-x[0]*x[0])*2*x[0],2*100*(x[1]-x[0]*x[0]));
+                Func<vector, vector> Himmelgrad = x => new vector(2*(x[0]*x[0]+x[1]-11)*2*x[0]+2*(x[0]+x[1]*x[1]-7),2*(x[0]*x[0]+x[1]-11)+2*(x[0]+x[1]*x[1]-7)*2*x[1]);
+		for(int i=0;i<2;i++){
+			vector xstart1 = new vector(Pow(-1,i)*4,-4);
+			vector xstart2 = new vector(Pow(-1,i)*4,4);
+			xstartHimmellist.Add(xstart1);
+			xstartHimmellist.Add(xstart2);
+			resHimmellist.Add(newton(Himmelgrad,xstart1));
+			resHimmellist.Add(newton(Himmelgrad,xstart2));
+			}
+		var xstartrosen = new vector(10,10);
+		var eksRosen = newton(Rosengrad,xstartrosen);
+		eksRosen.print("The result is found to be: \n");
+		WriteLine("In line with the expected result. \n We find the minima of Himmelblaus function using the following initial guesses:");
+		for(int i=0;i<4;i++){
+			xstartHimmellist[i].print("\ninitial guess:");
+			resHimmellist[i].print("gives result:");
+			}
+		WriteLine($"\n This is also in correspondance with expected values\n");
+		WriteLine("Part B)\n");
+		
 		return 1;
 		}//Main
 	}//Program

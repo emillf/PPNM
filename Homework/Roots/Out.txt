@@ -1,5 +1,22 @@
-      3.06       1.96 
-    0.0391     0.0391 
+Part A)
+
+We find the extremum of Rosenbrocks valley function using the initial guess (xi,yi)=(10,10):
+
+The result is found to be: 
          1          1 
+In line with the expected result. 
+ We find the minima of Himmelblaus function using the following initial guesses:
+
+initial guess:         4         -4 
+gives result:      3.58      -1.85 
+
+initial guess:         4          4 
+gives result:         3          2 
+
+initial guess:        -4         -4 
+gives result:     -3.78      -3.28 
+
+initial guess:        -4          4 
+gives result:     -2.81       3.13 
 1
 

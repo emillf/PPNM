@@ -16,9 +16,11 @@ Out.txt : main.exe
 	mono $< >$@
 matrix.dll : $(libs)/matrix.cs $(libs)/vector.cs
 	$(MKLIBS)
+ode.dll : ode.cs
+	$(MKLIBS)
 genlist.dll : $(libs)/genlist.cs
 	$(MKLIBS)
-main.exe : main.cs matrix.dll genlist.dll
+main.exe : main.cs matrix.dll genlist.dll ode.dll
 	$(MKEXE)
 clean:
 	$(RM) *.exe *.dll *.png *.gnu *.log [Oo]ut* [Ll]og* [Ee]rr
