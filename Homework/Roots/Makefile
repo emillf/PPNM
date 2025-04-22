@@ -25,13 +25,13 @@ rmaxrmin_plot : Convrminrmax.dat rmaxrmin_plot.gnu
 wavefunc_plot : wavefunc.dat wavefunc_plot.gnu
 	gnuplot wavefunc_plot.gnu
 wavefunc_plot.gnu:
-	@echo "set terminal svg size 1200,500 background 'white' " > $@
+	@echo "set terminal svg size 500,500 background 'white' " > $@
 	@echo "set output 'Wavefunc.svg'" >> $@
 	@echo "set title 'Plot of odesolver wavefunction at E_0 compared to exact wavefunction'" >> $@
 	@echo "set xlabel 'r [a_0]'" >> $@
 	@echo "set ylabel 'f'" >> $@
 	@echo "set grid" >> $@
-	@echo "set xrange [*:*]" >> $@
+	@echo "set xrange [0:8]" >> $@
 	@echo "plot 'wavefunc.dat' using 1:2 with lines title 'exact wavefunction r*exp(-r)', \\" >> $@
 	@echo "     'wavefunc.dat' using 3:4 with points pointtype 6 title 'Numerically calculated wavefunction', \\" >> $@
 epsacc_plot.gnu:

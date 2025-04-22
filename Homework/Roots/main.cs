@@ -95,12 +95,12 @@ public class Program{
 		var (xlist,ylist) = ODE.driver(F_E,(0.1,8.0),FEdifinitother);
                 using (StreamWriter writer = new StreamWriter("wavefunc.dat")){
                         writer.WriteLine("# rre fre rdif fdif");
-                        int Nmax = xlist.Count-1;
+                        int Nmax = (xlist.Count-1)/4;
                         for(int N=0;N<Nmax;N++){
-                                double rre = (8.0-0.1)/Nmax*N;
-                                double rdif= xlist[N];
+                                double rre = (8.0-0.1)/Nmax*4*N;
+                                double rdif= xlist[4*N];
 				double fre = rre*Exp(-rre);
-				double fdif = ylist[N][0];
+				double fdif = ylist[4*N][0];
                                 writer.WriteLine($"{rre} {fre} {rdif} {fdif}");
                                 }
                         }
