@@ -42,7 +42,7 @@ public class Program{
 				}while(true);
 			return x;
 			}
-        public static Func<vector,vector> Create_M_E(double acc=0.01,double eps=0.01,double rmax=8.0,double rmin=0.05){
+        public static Func<vector,vector> Create_M_E(double acc=0.01,double eps=0.01,double rmax=8.0,double rmin=0.1){
                         return (vector E) => {
                                 var FEdifinit = new vector(rmin-rmin*rmin,1-2*rmin);
                                 Func<double,vector,vector> FEdif = delegate(double x, vector y){
@@ -86,24 +86,40 @@ public class Program{
 		WriteLine("Part B)\n");
 		Func<vector,vector> M_E = Create_M_E();
 		vector Einit = new vector(-10.0);
-		newton(M_E,Einit).print("With initial guess E=-10 and rmin=0.05 rmax=8.0 we get the result E_0   =");
-		WriteLine("\nagain in correspondence with the expected result \n");
-		WriteLine("The plots contain an investigation of convergence of these results\n");
+		newton(M_E,Einit).print("With initial guess E=-10 and rmin=0.1 rmax=8.0 we get the result E_0   =");
+		WriteLine("\nagain in correspondence with the expected result \nWe plot this together with the exact result E=-1/2");
+		var FEdifinitother = new vector(0.1-0.1*0.1,1-2*0.1);
+		Func<double, vector, vector> F_E = delegate(double x, vector y){
+			return new vector(y[1],-2*(newton(M_E,Einit)[0]+(1.0/x))*y[0]);
+			};
+		var (xlist,ylist) = ODE.driver(F_E,(0.1,8.0),FEdifinitother);
+                using (StreamWriter writer = new StreamWriter("wavefunc.dat")){
+                        writer.WriteLine("# rre fre rdif fdif");
+                        int Nmax = xlist.Count-1;
+                        for(int N=0;N<Nmax;N++){
+                                double rre = (8.0-0.1)/Nmax*N;
+                                double rdif= xlist[N];
+				double fre = rre*Exp(-rre);
+				double fdif = ylist[N][0];
+                                writer.WriteLine($"{rre} {fre} {rdif} {fdif}");
+                                }
+                        }
+		WriteLine("The remaining plots contain an investigation of convergence of these results, acc and eps convergence are quite unusual with clear discontinuities.\n");
 		using (StreamWriter writer = new StreamWriter("Convacceps.dat")){
 			writer.WriteLine("# acct Eacct epst Eepst");
-			double accmax = 0.1;
-			double epsmax = 0.1;
-			double accmin = 0.01;
-			double epsmin = 0.01;
-			double epsfix = 0.05;
-			double accfix = 0.05;
-			double rmax = 8.0;
-			double rmin = 0.05;
+			double accmax = 0.07;
+			double epsmax = 0.07;
+			double accmin = 0.00;
+			double epsmin = 0.00;
+			double epsfix = 0.03;
+			double accfix = 0.03;
+			double rmax = 5.0;
+			double rmin = 0.3;
 			int Nmax = 100;
 			vector Einitnew = new vector(-5.0);
-			for(int N=0;N<Nmax;N++){
-				double acct=accmin+accmax/Nmax*N;
-				double epst=epsmin+epsmax/Nmax*N;
+			for(int N=1;N<Nmax;N++){
+				double acct=accmin+(accmax/((double)Nmax))*(double)N;
+				double epst=epsmin+(epsmax/((double)Nmax))*(double)N;
 				var M_Eepst = Create_M_E(accfix,epst,rmax,rmin);
 				var M_Eacct = Create_M_E(acct,epsfix,rmax,rmin);
 				var Eepst = newton(M_Eepst,Einitnew)[0];
@@ -111,6 +127,28 @@ public class Program{
 				writer.WriteLine($"{acct} {Eacct} {epst} {Eepst}");
 				}
 			}
+                using (StreamWriter writer = new StreamWriter("Convrminrmax.dat")){
+                        writer.WriteLine("# rmaxt Ermaxt rmint Ermint");
+                        double epsfix = 0.05;
+                        double accfix = 0.05;
+                        double rmaxmin = 1.0;
+                        double rminmin = 0.01;
+			double rmaxmax = 15.0;
+			double rminmax = 0.5;
+			double rmaxfix = 5.0;
+			double rminfix = 0.1;
+                        int Nmax = 100;
+                        vector Einitnew = new vector(-5.0);
+                        for(int N=0;N<Nmax;N++){
+                                double rmaxt=rmaxmin+(rmaxmax/((double)Nmax))*(double)N;
+                                double rmint= rminmin + (rminmax/((double)Nmax))*(double)N;
+                                var M_Ermaxt = Create_M_E(accfix,epsfix,rmaxt,rminfix);
+                                var M_Ermint = Create_M_E(accfix,epsfix,rmaxfix,rmint);
+                                var Ermaxt = newton(M_Ermaxt,Einitnew)[0];
+                                var Ermint = newton(M_Ermint,Einitnew)[0];
+                                writer.WriteLine($"{rmaxt} {Ermaxt} {rmint} {Ermint}");
+                                }
+                        }
 		return 1;
 		}//Main
 	}//Program

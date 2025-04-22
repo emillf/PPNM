@@ -27,9 +27,9 @@ This is also in correspondance with expected values
 
 Part B)
 
-With initial guess E=-10 and rmin=0.05 rmax=8.0 we get the result E_0   =      -0.5 
+With initial guess E=-10 and rmin=0.1 rmax=8.0 we get the result E_0   =    -0.502 
 
 again in correspondence with the expected result 
-
-The plots contain an investigation of convergence of these results
+We plot this together with the exact result E=-1/2
+The remaining plots contain an investigation of convergence of these results, acc and eps convergence are quite unusual with clear discontinuities.
 
