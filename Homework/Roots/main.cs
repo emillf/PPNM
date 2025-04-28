@@ -87,7 +87,7 @@ public class Program{
 		Func<vector,vector> M_E = Create_M_E();
 		vector Einit = new vector(-10.0);
 		newton(M_E,Einit).print("With initial guess E=-10 and rmin=0.1 rmax=8.0 we get the result E_0   =");
-		WriteLine("\nagain in correspondence with the expected result \nWe plot this together with the exact result E=-1/2");
+		WriteLine("\nagain in correspondence with the expected result \n \nWe plot this together with the exact result E=-1/2");
 		var FEdifinitother = new vector(0.1-0.1*0.1,1-2*0.1);
 		Func<double, vector, vector> F_E = delegate(double x, vector y){
 			return new vector(y[1],-2*(newton(M_E,Einit)[0]+(1.0/x))*y[0]);
@@ -104,17 +104,17 @@ public class Program{
                                 writer.WriteLine($"{rre} {fre} {rdif} {fdif}");
                                 }
                         }
-		WriteLine("The remaining plots contain an investigation of convergence of these results, acc and eps convergence are quite unusual with clear discontinuities.\n");
+		WriteLine("\n The remaining plots contain an investigation of convergence of these results, acc and eps convergence are quite unusual with clear discontinuities.\n");
 		using (StreamWriter writer = new StreamWriter("Convacceps.dat")){
 			writer.WriteLine("# acct Eacct epst Eepst");
 			double accmax = 0.07;
 			double epsmax = 0.07;
 			double accmin = 0.00;
 			double epsmin = 0.00;
-			double epsfix = 0.03;
-			double accfix = 0.03;
-			double rmax = 5.0;
-			double rmin = 0.3;
+			double epsfix = 0.01;
+			double accfix = 0.01;
+			double rmax = 8.0;
+			double rmin = 0.05;
 			int Nmax = 100;
 			vector Einitnew = new vector(-5.0);
 			for(int N=1;N<Nmax;N++){
@@ -149,6 +149,6 @@ public class Program{
                                 writer.WriteLine($"{rmaxt} {Ermaxt} {rmint} {Ermint}");
                                 }
                         }
-		return 1;
+		return 0;
 		}//Main
 	}//Program

@@ -21,13 +21,12 @@ public partial class ODE{
 	vector yinit,                /* y(initial-point) */
 	double h=0.05,              /* initial step-size */
 	double acc=0.01,             /* absolute accuracy goal */
-	double eps=0.01, double adj=1.5,              /* relative accuracy goal */
+	double eps=0.01, double adj=2,              /* relative accuracy goal */
 	bool writeh=false
 	){
 	var (a,b)=interval; double x=a; vector y=yinit.copy();
 	var xlist=new List<double>(); xlist.Add(x);
 	var ylist=new List<vector>(); ylist.Add(y);
-	double hmax =(b-a)/500;
 	do{
 		if(x>=b) return (xlist,ylist); /* job done */
 		if(x+h>b) h=b-x;               /* last step should end at b */
@@ -40,10 +39,11 @@ public partial class ODE{
 			ylist.Add(y);
 			}
 		if(err>0){
-			double factor = Min( Pow(tol/err,0.25)*0.95 , adj); // readjust stepsize
-			h=Min(h*factor,hmax); //enforce minimum step length
+			double factor = Pow(tol/err,0.25)*0.95;
+			if (factor>2) factor=2;
+			h=h*factor;
 			}
-		else h=Min(h*2,hmax); //enforce minimum step length
+		else h=h*2;
 		if(writeh==true) System.Console.WriteLine($"{h}");
 		}while(true);
 	}//driver
