@@ -4,8 +4,8 @@ using System.Numerics;
 class main{
 public static int Main(){
 for(double x=1;x<=10;x+=1){
-	Console.Write($"fgamma({x})={sfuns.fgamma(x)}    ");
-	}
+        Console.Write($"lnfgamma({x})={sfuns.fgammaln(x)}    \n");
+        }
 return 0;
-	}
+        }
 }
