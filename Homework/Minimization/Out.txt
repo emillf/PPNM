@@ -1,0 +1,21 @@
+Part A) 
+
+We find a minimum of Rosenbrocks valley function using the initial guess (xi,yi)=(10,10):
+
+Newtons method completed in 29 steps 
+
+The result is found to be: 
+         1          1 
+
+ We find a minimum of Himmelblaus function using the initial guess (xi,yi)=(4,4):
+
+Newtons method completed in 5 steps 
+
+The result is found to be: 
+         3          2 
+
+ Part B) 
+
+Newtons method completed in 0 steps 
+
+         1          1          1 
