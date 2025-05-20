@@ -1,15 +1,16 @@
 Part A) 
+ I have implemented newtons minimization method modified so that it exploits hessian symmetry 
 
 We find a minimum of Rosenbrocks valley function using the initial guess (xi,yi)=(10,10):
 
-Newtons method completed in 30 steps 
+Newtons method completed in 33 steps and  3.2211 ms 
 
 The result is found to be: 
          1          1 
 
  We find a minimum of Himmelblaus function using the initial guess (xi,yi)=(4,4):
 
-Newtons method completed in 6 steps 
+Newtons method completed in 6 steps and  0.0619 ms 
 
 The result is found to be: 
          3          2 
@@ -20,8 +21,45 @@ The result is found to be:
  Part B) 
  We try to find the mass of the Higgs boson by minimizing the deviation function 
 
-Newtons method completed in 43 steps 
+Newtons method completed in 72 steps and  2.7374 ms 
 
 Our result with initial values (A,m,Γ) is: 
       9.84        126       2.08 
 So this gives a result of 125.97GeV which is the expected value
+
+ 
+ Part C) 
+ Now lets test our central difference method, where I have also exploited hessian symmetry 
+
+Using the same initial values as for the forward difference approach
+
+We get the following minima for Rosenbrocks and Himmelblaus functions respectively
+ Rosen time and steps:
+Newtons method completed in 19 steps and 0.4793 ms
+
+Rosenbrocks minimum: 
+         1          1 
+Himmelblau time and steps:
+Newtons method completed in 6 steps and 0.0055 ms
+
+Himmelblaus minimum: 
+         3          2 
+So with these initial guesses the method is faster with the same steps.
+Aditionally, if we take (xi,yi)=(0,1)
+which is a much more difficult initial value. 
+ The forward difference method gives us: 
+
+Newtons method completed in 11 steps and  0.0152 ms 
+
+Himmelblaus minimum
+     -2.81       3.13 
+
+whilst the central difference method gives us 
+
+Newtons method completed in 100000 steps and 167.3644 ms
+
+Himmelblaus minimum
+       NaN        NaN 
+
+ so it depends on the specific use case 
+
