@@ -32,8 +32,10 @@ public class Program{
 		}
         static vector newton(Func<vector, double> φ,vector x,double acc=1e-3, bool show_steps=false){
 		int steps=0;
-                while(true){                   // Newton iterations
-                        vector g = gradient(φ,x);
+		int maxsteps = 1000;
+                do{                   // Newton iterations
+                        steps++;
+			vector g = gradient(φ,x);
                         if(g.norm() < acc)break;   // job done
                         matrix H = hessian(φ,x);
                         var (Q,R) = matrix.QR.decomp(H);
@@ -41,25 +43,19 @@ public class Program{
                         double λ = 1.0 ;
 			double φx = φ(x);
 			bool step_accepted=false;
-                	while(λ >= 1.0/1024){
+			double λmin = 1.0/1024;
+                	do{
 				vector xnew = x + λ * dx;
                         	if(φ(xnew) < φx){
-					x=xnew;
-                                        step_accepted=true;
 					break; // good step
 					}
+				if(λ<λmin){
+					break; //accept anyway
+					}
                         	λ /= 2;
-                        	}
-			steps++;
-			if(steps>1000){
-				WriteLine("Convergence criterion could not be reached");
-				break;
-				}
-            		if(!step_accepted){
-               			WriteLine("Line search failed to make progress");
-                		break;
-            			}
-			}
+                        	}while(true);
+				x+=λ*dx;
+			}while(steps<maxsteps);
 		if(show_steps) WriteLine($"Newtons method completed in {steps} steps \n");
                 return x;
                 }
@@ -100,8 +96,8 @@ static int Main(string[] filecontent){
         ekshimmel.print("The result is found to be: \n");
 	WriteLine("\n Part B) \n");
 	var Deviationfunc = Create_Devfunc(energy,signal,error);
-	vector initvals = new vector(1.0,1.0,1.0);
-	var Higgslist = newton(Deviationfunc,initvals,1e-3,true);
+	vector initvals = new vector(8,126,2);
+	var Higgslist = newton(Deviationfunc,initvals,1e-4,true);
 	Higgslist.print();
 	return 0;
 	}//Main
