@@ -14,8 +14,14 @@ Newtons method completed in 6 steps
 The result is found to be: 
          3          2 
 
+ Both of these minima are in accordance with the minima in the wiki 
+
+
  Part B) 
+ We try to find the mass of the Higgs boson by minimizing the deviation function 
 
-Newtons method completed in 75 steps 
+Newtons method completed in 43 steps 
 
-      9.87        126       2.09 
+Our result with initial values (A,m,Γ) is: 
+      9.84        126       2.08 
+So this gives a result of 125.97GeV which is the expected value

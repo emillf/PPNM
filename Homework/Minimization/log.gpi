@@ -1,0 +1,9 @@
+set terminal svg size 500,500 background 'white'
+set out 'Higgsplot.svg'
+set title 'Plot of deviation-minimized Breit-Wigner function with experimental data'
+set xlabel 'Energy [GeV]'
+set ylabel 'signal [Certain units]'
+set grid
+set xrange [100:160]
+plot 'Results.dat' with lines lt 8 lw 2 dashtype 2 title 'Breit-Wigner function', \
+     'higgs.data.txt' with errorbars pointtype 6 lc rgb 'red' title 'Experimental data'

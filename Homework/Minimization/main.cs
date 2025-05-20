@@ -1,6 +1,7 @@
 using System;
 using static System.Console;
 using static System.Math;
+using System.IO;
 using System.Collections.Generic;
 public class Program{
 	static vector gradient(Func<vector,double> φ,vector x){
@@ -42,7 +43,6 @@ public class Program{
                         vector dx = matrix.QR.solve(Q,R,-g);
                         double λ = 1.0 ;
 			double φx = φ(x);
-			bool step_accepted=false;
 			double λmin = 1.0/1024;
                 	do{
 				vector xnew = x + λ * dx;
@@ -94,11 +94,28 @@ static int Main(string[] filecontent){
         var xstarthimmel = new vector(4,4);
         var ekshimmel = newton(Himmelfunc,xstarthimmel,1e-3,true);
         ekshimmel.print("The result is found to be: \n");
-	WriteLine("\n Part B) \n");
+	WriteLine("\n Both of these minima are in accordance with the minima in the wiki \n");
+	WriteLine("\n Part B) \n We try to find the mass of the Higgs boson by minimizing the deviation function \n");
 	var Deviationfunc = Create_Devfunc(energy,signal,error);
 	vector initvals = new vector(8,126,2);
-	var Higgslist = newton(Deviationfunc,initvals,1e-4,true);
-	Higgslist.print();
+	var Higgslist = newton(Deviationfunc,initvals,1e-3,true);
+	var (A,m,Γ) = (Higgslist[0],Higgslist[1],Higgslist[2]);
+	Higgslist.print("Our result with initial values (A,m,Γ) is: \n");
+	WriteLine($"So this gives a result of {Higgslist[1]:F2}GeV which is the expected value");
+	Func<double,double> BWres = x => A/(Pow(x-m,2)+Γ*Γ/4.0);
+	using (StreamWriter writer = new StreamWriter("Results.dat")){
+        	writer.WriteLine("# Energy[GeV] signal[Certain units]");
+		double Einit = energy[0];
+		double Efinal = energy[energy.Count-1];
+		double Einterval = Efinal-Einit;
+		double Nmax = 200;
+		double Eslice = Einterval/Nmax;
+                for(int N=1;N<Nmax;N++){
+                	double Et = Einit+Eslice*N;
+			double sigt = BWres(Et);
+                        writer.WriteLine($"{Et} {sigt}");
+                        }
+                }
 	return 0;
 	}//Main
 	}//Program
