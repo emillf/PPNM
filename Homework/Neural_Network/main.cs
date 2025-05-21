@@ -86,7 +86,6 @@ public class ann{
                 	 g[i] = 0;
                 	}
             	}
-		
 			return g;
 			};
 		return Gradient;
@@ -130,9 +129,8 @@ static int Main(){
 	vector ysd = new vector(npoints);
 	vector ys2d = new vector(npoints);
 	vector ysad = new vector(npoints);
-	var rnd = new Random();
 	for(int i=0;i<xs.size;i++){
-		xs[i]=rnd.NextDouble()*Pow(-1,(double)rnd.Next(2));
+		xs[i]=-1+i*2/npoints;
 		ys[i]=gx(xs[i]);
 		ysd[i]=dgx(xs[i]);
 		ys2d[i]=d2gx(xs[i]);
@@ -149,6 +147,7 @@ static int Main(){
 	nn.trainanalytic1(xs,ys);
 	nn.p.print("The final parameters are: \n ");
 	nnum.p.print("The final numerical parameters are: \n ");
+	WriteLine($"numerical result at {xs[20]} is {nnum.response(xs[20])} analytic is {nn.response(xs[20])} real result is {gx(xs[20])}");
 	return 0;
 		}//Main
 	}//Program

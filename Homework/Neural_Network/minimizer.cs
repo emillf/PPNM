@@ -44,7 +44,7 @@ public partial class minimizer{
                         vector dx = matrix.QR.solve(Q,R,-g);
                         double λ = 1.0 ;
 			double φx = φ(x);
-			double λmin = 1.0/64.0;
+			double λmin = 1.0/1024.0;
                 	do{
 				vector xnew = x + λ * dx;
                         	if(φ(xnew) < φx){
@@ -60,7 +60,7 @@ public partial class minimizer{
 			}while(steps<maxsteps);
                 return x;
                 }
-        public static vector newtonAnalytic(Func<vector, double> φ,Func<vector,vector> grad, vector x,double acc=1e-3, int maxsteps=1000){
+        public static vector newtonAnalytic(Func<vector, double> φ,Func<vector,vector> grad, vector x,double acc=1e-3, int maxsteps=2000){
                 int steps=0;
                 do{                   // Newton iterations
                         steps++;
