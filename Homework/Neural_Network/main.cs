@@ -51,7 +51,6 @@ public class ann{
 		// Return a function expressing analytic gradient of the first cost function
 		Func<vector,vector> Gradient = delegate(vector param){
 			vector g = new vector(3*n);
-			try{
 			for(int i=0;i<param.size;i+=3){
 				double ai=param[i];
 				double bi=param[i+1];
@@ -66,26 +65,14 @@ public class ann{
 					double fval=f((x[k]-ai)/bi);
 					double dfval= df((x[k]-ai)/bi);
 					double rfactor=(1.0/x.size)*2.0*(response(x[k],param)-y[k]);
-                     			 // Safeguard against extreme values
-                        		if(Double.IsFinite(rfactor) && Double.IsFinite(dfval) && Double.IsFinite(fval)) {
-                            			gradai += (-1.0/bi) * dfval * wi * rfactor;
-                            			gradbi += (ai-x[k])/(bi*bi) * dfval * wi * rfactor;
-                            			gradwi += fval * rfactor;
-                        			}
-					}
-                    		const double clipValue = 1e5;
-                    		g[i] = Double.IsFinite(gradai) ? Math.Max(Math.Min(gradai, clipValue), -clipValue) : 0;
-                    		g[i+1] = Double.IsFinite(gradbi) ? Math.Max(Math.Min(gradbi, clipValue), -clipValue) : 0;
-                    		g[i+2] = Double.IsFinite(gradwi) ? Math.Max(Math.Min(gradwi, clipValue), -clipValue) : 0;
-                	}
-            	}
-                catch (Exception ex) {
-               	 	WriteLine($"Exception in gradient calculation: {ex.Message}");
-                	// Return zero gradient as a fallback
-                	for(int i=0; i<g.size; i++) {
-                	 g[i] = 0;
-                	}
-            	}
+                            		gradai += (-1.0/bi) * dfval * wi * rfactor;
+                            		gradbi += (ai-x[k])/(bi*bi) * dfval * wi * rfactor;
+                            		gradwi += fval * rfactor;
+                        		}
+                    		g[i] = gradai;
+                    		g[i+1] = gradbi;
+                    		g[i+2] = gradwi;
+                		}
 			return g;
 			};
 		return Gradient;
