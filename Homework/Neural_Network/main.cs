@@ -30,6 +30,14 @@ public class ann{
 			}
 		return result;
 		}
+        public double responsed(double x,vector p = null){
+		double result = 0;
+		if(p==null) p = this.p;
+		for(int i=0;i<p.size;i+=3){
+			result+=df((x-p[i])/p[i+1]) * (p[i+2]/p[i+1]);
+			}
+		return result;
+		}
 	public double response2d(double x, vector p = null){
                 double result=0;
                 if(p==null) p = this.p;
@@ -105,9 +113,9 @@ public class ann{
 	}//Ann class
 static int Main(){
 	int neurons = 3;
-	int npoints = 100;
+	int npoints = 250;
 	WriteLine($"Part A)\n\nWe make a neural network of {neurons} neurons and train it on the function Cos(5*x-1)*Exp(-x*x)\n");
-	WriteLine($"Training data will be {npoints} random x values on the interval [-1,1] and their corresponding y values from the training function\n");
+	WriteLine($"Training data will be {npoints} of x values on the interval [-1,1] and their corresponding y values from the training function\n");
 	Func<double,double> gx = x => Cos(5*x-1)*Exp(-x*x);
 	Func<double,double> dgx = x =>  Exp(-x*x) * (-5*Sin(5*x - 1) - 2*x*Cos(5*x - 1));
 	Func<double,double> d2gx = x => Exp(-x*x) * ((4*x*x - 27)*Cos(5*x-1)+20*x*Sin(5*x-1));
@@ -117,12 +125,12 @@ static int Main(){
 	vector ys2d = new vector(npoints);
 	vector ysad = new vector(npoints);
 	for(int i=0;i<xs.size;i++){
-		xs[i]=-1+i*2/npoints;
+		xs[i]=-1.0+i*2.0/npoints;
 		ys[i]=gx(xs[i]);
 		ysd[i]=dgx(xs[i]);
 		ys2d[i]=d2gx(xs[i]);
 		if(xs[i]<0.0){
-			ysad[i]=-integration.integrate(gx,0.0,xs[i]).Item1;
+			ysad[i]=integration.integrate(gx,0.0,xs[i]).Item1;
 			}
 		else{
 			ysad[i]=integration.integrate(gx,0.0,xs[i]).Item1;
@@ -133,8 +141,24 @@ static int Main(){
 	nnum.trainnumeric(xs,ys);
 	nn.trainanalytic1(xs,ys);
 	nn.p.print("The final parameters are: \n ");
-	nnum.p.print("The final numerical parameters are: \n ");
-	WriteLine($"numerical result at {xs[20]} is {nnum.response(xs[20])} analytic is {nn.response(xs[20])} real result is {gx(xs[20])}");
+	WriteLine($"Result using analytic gradient at 0.4 is {nn.response(0.4)} real result is {gx(0.4)}\n");
+	WriteLine("\nPart B)\n\n A plot of the derivative, antiderivative, 2nd derivative and original function along with is Neural counterpart can be seen in the plots.");
+        using (StreamWriter writer = new StreamWriter("Vals.dat")){
+        	writer.WriteLine("# xs ys ysn ysd ysdn ys2d ys2dn ysad ysadn");
+                for(int i=0;i<npoints;i++){
+				var xss = xs[i];
+				var yss = ys[i];
+				var ysn = nn.response(xss);
+				var yssd = ysd[i];
+				var ysdn = nn.responsed(xss);
+				var yss2d = ys2d[i];
+				var ys2dn = nn.response2d(xss);
+				var yssad = ysad[i];
+				var ysadn = nn.responsead(xss) +(ysad[50]-nn.responsead(xs[50])); //Adding constant of integration
+                        writer.WriteLine($"{xss} {yss} {ysn} {yssd} {ysdn} {yss2d} {ys2dn} {yssad} {ysadn}");
+                                }
+                        }
+	WriteLine("\n\n Part C) \n\n ");
 	return 0;
 		}//Main
 	}//Program

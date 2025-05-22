@@ -1,0 +1,117 @@
+set terminal svg size 1000,800 background 'white'
+set output 'NN_plot.svg'
+set title 'Derivatives of f(x)=Cos(5x-1)*Exp(-x*x) and the neural network response NN(x)'
+set xlabel 'x'
+set ylabel 'y'
+set grid
+set xrange [-1:1]
+set multiplot layout 2,2 rowsfirst
+plot 'Vals.dat' using 1:2 with lines title 'f(x)', 'Vals.dat' using 1:3 with lines lw 2 dashtype 2 title 'NN(x)'
+plot 'Vals.dat' using 1:4 with lines title 'first derivative of f(x)', 'Vals.dat' using 1:5 with lines lw 2 dashtype 2 title 'first derivative of NN(x)'
+plot 'Vals.dat' using 1:6 with lines title 'second derivative of f(x)', 'Vals.dat' using 1:7 with lines lw 2 dashtype 2 title 'second derivative of NN(x)'
+plot 'Vals.dat' using 1:8 with lines title 'antiderivative of f(x)', 'Vals.dat' using 1:9 with lines lw 2 dashtype 2 title 'antiderivative of NN(x)'
+unset multiplot
+set terminal svg size 1000,800 background 'white'
+set output 'NN_plot.svg'
+set title 'Derivatives of f(x)=Cos(5x-1)*Exp(-x*x) and the neural network response NN(x)'
+set xlabel 'x'
+set ylabel 'y'
+set grid
+set xrange [-1:1]
+set multiplot layout 2,2 rowsfirst
+plot 'Vals.dat' using 1:2 with lines title 'f(x)', 'Vals.dat' using 1:3 with lines lw 2 dashtype 2 title 'NN(x)'
+plot 'Vals.dat' using 1:4 with lines title 'first derivative of f(x)', 'Vals.dat' using 1:5 with lines lw 2 dashtype 2 title 'first derivative of NN(x)'
+plot 'Vals.dat' using 1:6 with lines title 'second derivative of f(x)', 'Vals.dat' using 1:7 with lines lw 2 dashtype 2 title 'second derivative of NN(x)'
+plot 'Vals.dat' using 1:8 with lines title 'antiderivative of f(x)', 'Vals.dat' using 1:9 with lines lw 2 dashtype 2 title 'antiderivative of NN(x)'
+unset multiplot
+set terminal svg size 1000,800 background 'white'
+set output 'NN_plot.svg'
+set title 'Derivatives of f(x)=Cos(5x-1)*Exp(-x*x) and the neural network response NN(x)'
+set xlabel 'x'
+set ylabel 'y'
+set grid
+set xrange [-1:1]
+set multiplot layout 2,2 rowsfirst
+plot 'Vals.dat' using 1:2 with lines title 'f(x)', 'Vals.dat' using 1:3 with lines lw 2 dashtype 2 title 'NN(x)'
+plot 'Vals.dat' using 1:4 with lines title 'first derivative of f(x)', 'Vals.dat' using 1:5 with lines lw 2 dashtype 2 title 'first derivative of NN(x)'
+plot 'Vals.dat' using 1:6 with lines title 'second derivative of f(x)', 'Vals.dat' using 1:7 with lines lw 2 dashtype 2 title 'second derivative of NN(x)'
+plot 'Vals.dat' using 1:8 with lines title 'antiderivative of f(x)', 'Vals.dat' using 1:9 with lines lw 2 dashtype 2 title 'antiderivative of NN(x)'
+unset multiplot
+set terminal svg size 1000,800 background 'white'
+set output 'NN_plot.svg'
+set title 'Derivatives of f(x)=Cos(5x-1)*Exp(-x*x) and the neural network response NN(x)'
+set xlabel 'x'
+set ylabel 'y'
+set grid
+set xrange [-1:1]
+set multiplot layout 2,2 rowsfirst
+plot 'Vals.dat' using 1:2 with lines title 'f(x)', 'Vals.dat' using 1:3 with lines lw 2 dashtype 2 title 'NN(x)'
+plot 'Vals.dat' using 1:4 with lines title 'first derivative of f(x)', 'Vals.dat' using 1:5 with lines lw 2 dashtype 2 title 'first derivative of NN(x)'
+plot 'Vals.dat' using 1:6 with lines title 'second derivative of f(x)', 'Vals.dat' using 1:7 with lines lw 2 dashtype 2 title 'second derivative of NN(x)'
+plot 'Vals.dat' using 1:8 with lines title 'antiderivative of f(x)', 'Vals.dat' using 1:9 with lines lw 2 dashtype 2 title 'antiderivative of NN(x)'
+unset multiplot
+set terminal svg size 1000,800 background 'white'
+set output 'NN_plot.svg'
+set title 'Derivatives of f(x)=Cos(5x-1)*Exp(-x*x) and the neural network response NN(x)'
+set xlabel 'x'
+set ylabel 'y'
+set grid
+set xrange [-1:1]
+set multiplot layout 2,2 rowsfirst
+plot 'Vals.dat' using 1:2 with lines title 'f(x)', 'Vals.dat' using 1:3 with lines lw 2 dashtype 2 title 'NN(x)'
+plot 'Vals.dat' using 1:4 with lines title 'first derivative of f(x)', 'Vals.dat' using 1:5 with lines lw 2 dashtype 2 title 'first derivative of NN(x)'
+plot 'Vals.dat' using 1:6 with lines title 'second derivative of f(x)', 'Vals.dat' using 1:7 with lines lw 2 dashtype 2 title 'second derivative of NN(x)'
+plot 'Vals.dat' using 1:8 with lines title 'antiderivative of f(x)', 'Vals.dat' using 1:9 with lines lw 2 dashtype 2 title 'antiderivative of NN(x)'
+unset multiplot
+set terminal svg size 1000,800 background 'white'
+set output 'NN_plot.svg'
+set title 'Derivatives of f(x)=Cos(5x-1)*Exp(-x*x) and the neural network response NN(x)'
+set xlabel 'x'
+set ylabel 'y'
+set grid
+set xrange [-1:1]
+set multiplot layout 2,2 rowsfirst
+plot 'Vals.dat' using 1:2 with lines title 'f(x)', 'Vals.dat' using 1:3 with lines lw 2 dashtype 2 title 'NN(x)'
+plot 'Vals.dat' using 1:4 with lines title 'first derivative of f(x)', 'Vals.dat' using 1:5 with lines lw 2 dashtype 2 title 'first derivative of NN(x)'
+plot 'Vals.dat' using 1:6 with lines title 'second derivative of f(x)', 'Vals.dat' using 1:7 with lines lw 2 dashtype 2 title 'second derivative of NN(x)'
+plot 'Vals.dat' using 1:8 with lines title 'antiderivative of f(x)', 'Vals.dat' using 1:9 with lines lw 2 dashtype 2 title 'antiderivative of NN(x)'
+unset multiplot
+set terminal svg size 1000,800 background 'white'
+set output 'NN_plot.svg'
+set title 'Derivatives of f(x)=Cos(5x-1)*Exp(-x*x) and the neural network response NN(x)'
+set xlabel 'x'
+set ylabel 'y'
+set grid
+set xrange [-1:1]
+set multiplot layout 2,2 rowsfirst
+plot 'Vals.dat' using 1:2 with lines title 'f(x)', 'Vals.dat' using 1:3 with lines lw 2 dashtype 2 title 'NN(x)'
+plot 'Vals.dat' using 1:4 with lines title 'first derivative of f(x)', 'Vals.dat' using 1:5 with lines lw 2 dashtype 2 title 'first derivative of NN(x)'
+plot 'Vals.dat' using 1:6 with lines title 'second derivative of f(x)', 'Vals.dat' using 1:7 with lines lw 2 dashtype 2 title 'second derivative of NN(x)'
+plot 'Vals.dat' using 1:8 with lines title 'antiderivative of f(x)', 'Vals.dat' using 1:9 with lines lw 2 dashtype 2 title 'antiderivative of NN(x)'
+unset multiplot
+set terminal svg size 1000,800 background 'white'
+set output 'NN_plot.svg'
+set title 'Derivatives of f(x)=Cos(5x-1)*Exp(-x*x) and the neural network response NN(x)'
+set xlabel 'x'
+set ylabel 'y'
+set grid
+set xrange [-1:1]
+set multiplot layout 2,2 rowsfirst
+plot 'Vals.dat' using 1:2 with lines title 'f(x)', 'Vals.dat' using 1:3 with lines lw 2 dashtype 2 title 'NN(x)'
+plot 'Vals.dat' using 1:4 with lines title 'first derivative of f(x)', 'Vals.dat' using 1:5 with lines lw 2 dashtype 2 title 'first derivative of NN(x)'
+plot 'Vals.dat' using 1:6 with lines title 'second derivative of f(x)', 'Vals.dat' using 1:7 with lines lw 2 dashtype 2 title 'second derivative of NN(x)'
+plot 'Vals.dat' using 1:8 with lines title 'antiderivative of f(x)', 'Vals.dat' using 1:9 with lines lw 2 dashtype 2 title 'antiderivative of NN(x)'
+unset multiplot
+set terminal svg size 1000,800 background 'white'
+set output 'NN_plot.svg'
+set title 'Derivatives of f(x)=Cos(5x-1)*Exp(-x*x) and the neural network response NN(x)'
+set xlabel 'x'
+set ylabel 'y'
+set grid
+set xrange [-1:1]
+set multiplot layout 2,2 rowsfirst
+plot 'Vals.dat' using 1:2 with lines title 'f(x)', 'Vals.dat' using 1:3 with lines lw 2 dashtype 2 title 'NN(x)'
+plot 'Vals.dat' using 1:4 with lines title 'first derivative of f(x)', 'Vals.dat' using 1:5 with lines lw 2 dashtype 2 title 'first derivative of NN(x)'
+plot 'Vals.dat' using 1:6 with lines title 'second derivative of f(x)', 'Vals.dat' using 1:7 with lines lw 2 dashtype 2 title 'second derivative of NN(x)'
+plot 'Vals.dat' using 1:8 with lines title 'antiderivative of f(x)', 'Vals.dat' using 1:9 with lines lw 2 dashtype 2 title 'antiderivative of NN(x)'
+unset multiplot

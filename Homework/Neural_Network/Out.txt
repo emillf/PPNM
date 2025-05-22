@@ -2,14 +2,18 @@ Part A)
 
 We make a neural network of 3 neurons and train it on the function Cos(5*x-1)*Exp(-x*x)
 
-Training data will be 100 random x values on the interval [-1,1] and their corresponding y values from the training function
+Training data will be 250 of x values on the interval [-1,1] and their corresponding y values from the training function
 
-Step 1, ||grad|| = 2.01330912742943
-Step 2, ||grad|| = 0.0469049089230287
-Step 3, ||grad|| = 0.0118390569378901
-Step 4, ||grad|| = 0.000185671163507323
 The final parameters are: 
-        1.6       1.88     -0.878      0.831       1.41     -0.883       2.12       1.62      0.794 
-The final numerical parameters are: 
-       1.41       1.82      -1.12       1.54       1.81     -0.916       1.78       1.61      0.963 
-numerical result at -1 is 0.353236385602061 analytic is 0.352963297838979 real result is 0.35322690848236
+       1.65       1.87      -3.33       1.26      0.995       5.26    -0.0826      0.478       3.25 
+Result using analytic gradient at 0.4 is 0.450030618583242 real result is 0.460415254109657
+
+
+Part B)
+
+ A plot of the derivative, antiderivative, 2nd derivative and original function along with is Neural counterpart can be seen in the plots.
+
+
+ Part C) 
+
+ 

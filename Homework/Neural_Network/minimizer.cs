@@ -65,7 +65,7 @@ public partial class minimizer{
                 do{                   // Newton iterations
                         steps++;
                         vector g = grad(x);
-			WriteLine($"Step {steps}, ||grad|| = {g.norm()}");
+			//WriteLine($"Step {steps}, ||grad|| = {g.norm()}");
                         if(g.norm() < acc)break;   // job done
                         matrix H = hessian(φ,x);
                         var (Q,R) = matrix.QR.decomp(H);
