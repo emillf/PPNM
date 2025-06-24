@@ -1,0 +1,23 @@
+Part A) 
+ 
+We generate a random 3x3 symmetric matrix A
+
+A = 
+
+      4.15       2.72      0.992 
+      2.72       7.51       1.96 
+     0.992       1.96        4.5 
+
+using our method with initial guesses v=(1,2,3) and λ=2 we get:
+
+v =    -0.857      0.509    -0.0792 
+
+λ =  2.6306409381379
+
+If we calculate Av and λ*v we get
+
+Av =      -2.26       1.34     -0.208 
+
+λv =     -2.25       1.34     -0.208 
+
+So the method works
