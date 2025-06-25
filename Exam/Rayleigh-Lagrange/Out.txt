@@ -1,23 +1,56 @@
 Part A) 
  
-We generate a random 3x3 symmetric matrix A
+We generate a random 3x3 symmetric matrix A with values from 0 to 10
 
 A = 
 
-      4.15       2.72      0.992 
-      2.72       7.51       1.96 
-     0.992       1.96        4.5 
+     0.837       5.41       7.68 
+      5.41       9.47        3.6 
+      7.68        3.6       7.19 
 
-using our method with initial guesses v=(1,2,3) and λ=2 we get:
+Using our method with initial guesses v = (1,1,1) and λ = 2 we get:
 
-v =    -0.857      0.509    -0.0792 
+v =    -0.183      0.752     -0.633 
 
-λ =  2.6306409381379
+λ =  5.13198405936788
 
-If we calculate Av and λ*v we get
+If we calculate Av and λ*v we get in time 0.0031065 s
 
-Av =      -2.26       1.34     -0.208 
+Av =     -0.941       3.86      -3.25 
 
-λv =     -2.25       1.34     -0.208 
+λv =    -0.941       3.86      -3.25 
 
-So the method works
+So the method works as we see Av = λv
+
+We time the process for a larger and larger n x n symmetric matrix in the plot.
+
+To remove variation in the quality of the starting guess, the n x n matrix will be a tridiagonal toeplitz matrix.
+
+Entries are defined as A[i,i] = -1, and A[i+1,i]=A[i,i+1]=2 (for 1<=i<=n-1),
+
+With the kth eigenvalue λ_k = 2-2*cos(k*pi/(n+1))
+
+and corresponding eigenvector entries v_j=sqrt(2/(n+1))*sin(j*k*pi/(n+1))
+
+This ensures well spaced eigenvalues and some offdiagonal terms. 
+I can thus choose λstart = 2 and vstart=(1,1,1,1,....)
+
+As can be seen in Time_plot time goes like O(n^2), so generally around n=400 it becomes unfeasible for my box
+
+The exact time it becomes unfeasible also depends on the matrix choice and guess quality of course.
+
+I tried a random 100x100 matrix with the same start guesses as the toeplitz this took about twice as long as the 100x100 toeplitz
+0.000585656777994378
+
+
+Part C)
+
+ Calculating several lowest eigenfunctions of the hydrogen atom requires solving the eigenvalue problem Hu=Eu
+
+Where H[i,i]=1/h^2+l(l+1)/(2r[i]^2)-1/r_i and H[i,i±1]=-1/(2h^2), where h is small.
+
+This equation has been derived by expanding the derivatives of u the radial Schrödinger equation in atomic units.
+
+Like in our roots exercise, we choose rmax to be 20.0.
+
+ We calculate the n=1,2,3 lowest states of the Hydrogen atom, with all the allowed l values
