@@ -45,7 +45,7 @@ public class Program{
 			int n = (int)((rmax - rmin)/delta_r);
 			matrix H = new matrix(n,n);
 			double coeff= 1.0/(delta_r*delta_r);
-			for(int i=0;i<n;i++){ //We drop H[n,n] since we set u(rmin)=u(rmax)=0
+			for(int i=0;i<n;i++){
 				double ri =rmin + (i)*delta_r;
 				H[i,i]=-coeff-1.0/ri + l*(l+1)/(2*ri*ri);
 				if(i>0)H[i,i-1]=0.5*coeff;
@@ -114,7 +114,7 @@ public class Program{
                         return (v,λ,stopwatch.Elapsed.TotalSeconds);
                         }
 	static int Main(){
-		WriteLine("Part A) \n \nWe generate a random 3x3 symmetric matrix A with values from 0 to 10\n");
+		WriteLine("Part A) \n \nWe generate a random 6x6 symmetric matrix A with values from 0 to 10\n");
 		var rnd = new Random();
 		int ndim=6;
 		matrix A = new matrix(ndim,ndim);
@@ -138,7 +138,7 @@ public class Program{
 		Jacobian_test.print("\n");
 		vstarttest.print("\n");
 		(vector v,double λ,double time1) = newton_eigenvaluefinder(vstart, λstart, A);
-		WriteLine("\nUsing our method with initial guesses v = (1,1,1) and λ = 2 we get:\n");
+		WriteLine("\nUsing our method with initial guesses v = (1,1,1,1,1,1) and λ = 2 we get:\n");
 		v.print("v =");
 		WriteLine($"\nλ =  {λ}");
 		WriteLine($"\nIf we calculate Av and λ*v we get in time {time1} s\n");
@@ -156,7 +156,7 @@ public class Program{
 		WriteLine("\nAs can be seen in Time_plot time goes like O(n^2), so generally around n=400 it becomes unfeasible for my box");
 		WriteLine("\nThe exact time it becomes unfeasible also depends on the matrix choice and guess quality of course.");
 		WriteLine($"\nI tried a random 100x100 matrix with the same start guesses as the toeplitz this took about twice as long as the 100x100 toeplitz");
-		int nmax=20;
+		int nmax=400;
 		int index=0;
 		vector timetoes = new vector(10);
 		for(int n = nmax/10;n<nmax+nmax/10;n+=nmax/10){
@@ -183,11 +183,11 @@ public class Program{
 		timetoes[index]=timetoe;
 		index++;
 		}
-		double rmax=30.0;
-		double rmin =0.05;
+		double rmax=20.0;
+		double rmin =0.001;
 		double delta_r = 0.05;
 		matrix Hl0=Create_H(delta_r,rmin,rmax);
-		matrix Hl1=Create_H(delta_r,rmin,rmax);
+		matrix Hl1=Create_H(delta_r,rmin,rmax,1.0);
 		int H_n = Hl0.size1;
 		vector ustartn1 = new vector(H_n);
 		vector ustartn2l0= new vector(H_n);
@@ -212,7 +212,7 @@ public class Program{
 		double utestn2l1 = (Hl1*un2l1).dot(Hl1*un2l1)-(E2l1*un2l1).dot(E2l1*un2l1);
 		WriteLine($"\n\nPart C)\n\n Calculating several lowest eigenfunctions of the hydrogen atom requires solving the eigenvalue problem Hu=Eu");
 		WriteLine("\nWhere H[i,i]=-1/h^2+l(l+1)/(2r[i]^2)-1/r_i and H[i,i±1]=1/(2h^2), where h is small.");
-		WriteLine("\nThis equation has been derived by expanding the derivatives of u the radial Schrödinger equation in atomic units.");
+		WriteLine("\nThis equation has been derived by using the central difference approximation on d^2u/dr^2 the radial Schrödinger equation in atomic units.");
 		WriteLine($"\nLike in our roots exercise, we choose rmax to be {rmax} and rmin={rmin}");
 		WriteLine("\nWe calculate the n=1 l=0, n=2 l=0 and n=2 l=1  lowest states of the Hydrogen atom");
 		WriteLine($"\n These give us the energies {E1} {E2l0} and {E2l1} respectively (in hartrees)");
@@ -220,8 +220,8 @@ public class Program{
 		WriteLine($"\nand that |H_(l=1)*u_21||^2 - ||E2*u_21||^2={utestn2l0:F3}");
 		WriteLine("\nSo the wrong energies (they should be -1/2,-1/8,-1/8) are not due to the linesearch failing.");
 		WriteLine("\nRather it is likely due to needing better step length, smaller rmin and rmax which is not feasible as H becomes too large,");
-		WriteLine("\nOr a way to write H which enforces the boundary conditions better - namely u(rmin)=rmin-rmin^2");
-		WriteLine("\nA plot of the corresponding reduced radial wavefunctions can be found in Eigenfuncs.svg");
+		WriteLine("\nOr a way to write H which enforces the boundary conditions better");
+		WriteLine("\nA plot of the corresponding reduced radial wavefunctions can be found in Eigenfuncs_plot.svg");
                 using (StreamWriter writer = new StreamWriter("Times.dat")){
                 	writer.WriteLine("#ns ts");
                 	for(int i=1;i<10;i++){
