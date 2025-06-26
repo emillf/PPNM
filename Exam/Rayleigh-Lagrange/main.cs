@@ -11,7 +11,7 @@ public class Program{
                         matrix J=new matrix(n+2,n+2);
                         for(int j=0;j <= n;j++){ //Creating jacobian entries for i,j<n
                                 for(int i=0; i<j+1 ;i++){
-			 		if(i==n) J[i,j]=A[i,j]-λ; // we are in i,j<n case always because of loop conditions
+			 		if(i==j) J[i,j]=A[i,j]-λ; // we are in i,j<n case always because of loop conditions
 					else J[i,j]=A[i,j];
 					J[j,i]=J[i,j]; //Jacobian is symmetric in the i,j <= n case because A is symmetric
 					}
@@ -22,7 +22,7 @@ public class Program{
 			for(int j=0;j<=n;j++){ //Handling f_n+1 entries without λ derivative
 				J[n+1,j]=2*x[j];
 				}
-			J[n+1,n+1]=(double)0; // df_n+1/dλ case
+			J[n+1,n+1]=0.0; // df_n+1/dλ case
                         return J;
                         }
 		public static Func<vector,vector> Create_func_from_A(matrix A){ //Method to create Func<vector,vector> from symmetric A
@@ -41,17 +41,20 @@ public class Program{
 				return fvals;
 				};
 			}
-		public static matrix Create_H(int n, double l,double rmin=0.01, double rmax=50.0){
+		public static matrix Create_H(double delta_r =0.05,double rmin=0.1, double rmax=20.0,double l=0.0){
+			int n = (int)((rmax - rmin)/delta_r);
 			matrix H = new matrix(n,n);
-			double delta_r=(rmax-rmin)/(n-1);
-			for(int i=0;i<n-1;i++){ //We drop H[n,n] since we have that u(rmax)=0
-				double ri = (i+1)*delta_r;
-				H[i,i]=1/(delta_r*delta_r)+(l*(l+1))/(2*ri*ri)-1/ri;
-				if(i>0) H[i,i-1]=-1/(2*delta_r*delta_r);
-				if(i<n-2) H[i,i+1]=-1/(2*delta_r*delta_r);
+			double coeff= 1.0/(delta_r*delta_r);
+			for(int i=0;i<n;i++){ //We drop H[n,n] since we set u(rmin)=u(rmax)=0
+				double ri =rmin + (i)*delta_r;
+				H[i,i]=-coeff-1.0/ri + l*(l+1)/(2*ri*ri);
+				if(i>0)H[i,i-1]=0.5*coeff;
+				if(i<n-1) H[i,i+1]=0.5*coeff;
 				}
-			H[0, 0] = 1e10;  // large number to suppress contribution
-			H[n - 1, n - 1] = 1e10;
+			//H[0, 0] = 0.0;
+			//H[1,0] =0.0;
+			//H[n - 1, n - 1] = 0.0;
+			//H[n-2,n-1]=0.0; // We set first and last column to be 0 to enforce boundary conditions
 			return H;
 			}
                 public static (vector,double,double) newton_eigenvaluefinder(
@@ -59,9 +62,10 @@ public class Program{
 		,double startλ       // Startvalue for our lagrangian multiplier λ
 		,matrix A            // Symmetric matrix A for to get the analytic Jacobian and our function to find roots of
                 ,double acc=1e-3     // accuracy goal: on exit ‖f(x)‖ should be <acc
+		,bool analytic=false //Option to use analytic linesearch instead of backtracking linesearch
                 ){
 			var stopwatch=new Stopwatch();
-			int maxiterations =10*(int)Pow(10,5);
+			int maxiterations =(int)Pow(10,5);
 			stopwatch.Start();
                         vector xnoλ=startv.copy();
 			vector x = new vector(startv.size+1);
@@ -76,19 +80,32 @@ public class Program{
             				WriteLine($"Newton method reached max iterations ({maxiterations}) without converging.");
             				break;
 					}
+				if (double.IsNaN(fx.norm()) || fx.norm() > 1e10) {
+					WriteLine("Divergence detected.");
+    					break;
+					}
                                 matrix J=analytic_lagrange_jacobian(A,x);
                                 var QRJ = matrix.QR.decomp(J);
                                 vector Dx = matrix.QR.solve(QRJ.Item1,QRJ.Item2,-fx); /* Newton's step */
                                 double scaler=1.0;
-                                double scalermin =Pow(10,-3);
-                                do{ /* linesearch */
-                                        z=x+scaler*Dx;
-                                        fz=f(z);
-                                        if( fz.norm() < (1-scaler/2)*fx.norm() ) break;
-                                        if( scaler < scalermin ) break;
-                                        scaler/=2;
-                                        }while(true);
-                                x=z; fx=fz; iteration++;
+                                double scalermin =Pow(2,-6);
+				double alpha= 1.0; //Placeholder for optimal analytic scaler
+				if(analytic){ //Analytic linesearch
+					vector Jdx=J*Dx;
+					alpha=-fx.dot(Jdx)/(Jdx.dot(Jdx));
+					z=x+alpha*Dx;
+					fz=f(z);
+					}
+				else{
+                                	do{ // Numerical linesearch
+                                        	z=x+scaler*Dx;
+                                        	fz=f(z);
+                                        	if( fz.norm() < (1-scaler/2)*fx.norm() ) break;
+                                        	if( scaler < scalermin ) break;
+                                        	scaler/=2;
+                                        	}while(true);
+					}
+                                	x=z; fx=fz; iteration++;
                                 }while(true);
 			stopwatch.Stop();
 			vector v= new vector(x.size-1);
@@ -99,7 +116,7 @@ public class Program{
 	static int Main(){
 		WriteLine("Part A) \n \nWe generate a random 3x3 symmetric matrix A with values from 0 to 10\n");
 		var rnd = new Random();
-		int ndim=3;
+		int ndim=6;
 		matrix A = new matrix(ndim,ndim);
 		for(int i=0; i<ndim; i++){
 			for(int j=0; j<i+1;j++){
@@ -110,8 +127,16 @@ public class Program{
 			}
 		A.print("A = \n");
 		vector vstart= new vector(ndim);
-		for(int i =0;i<ndim;i++) vstart[i]=1.0;
+		vector vstarttest = new vector(ndim+1);
+		for(int i =0;i<ndim;i++){
+			vstart[i]=1.0;
+			vstarttest[i]=1.0;
+			}
+		vstarttest[ndim]=2.0;
 		double λstart = 2.0;
+		var Jacobian_test = analytic_lagrange_jacobian(A,vstarttest);
+		Jacobian_test.print("\n");
+		vstarttest.print("\n");
 		(vector v,double λ,double time1) = newton_eigenvaluefinder(vstart, λstart, A);
 		WriteLine("\nUsing our method with initial guesses v = (1,1,1) and λ = 2 we get:\n");
 		v.print("v =");
@@ -158,25 +183,66 @@ public class Program{
 		timetoes[index]=timetoe;
 		index++;
 		}
-		int H_n = 400;
-		matrix Hl0=Create_H(H_n,0.0);
-		vector ustart = new vector(H_n);
-		for(int i =0;i<H_n-1;i++) ustart[i]=1.0;
-		(vector u,double lambda,double timeH) = newton_eigenvaluefinder(ustart,-0.5,Hl0);
-		WriteLine($"{lambda}");
-		WriteLine("\n\nPart C)\n\n Calculating several lowest eigenfunctions of the hydrogen atom requires solving the eigenvalue problem Hu=Eu");
-		WriteLine("\nWhere H[i,i]=1/h^2+l(l+1)/(2r[i]^2)-1/r_i and H[i,i±1]=-1/(2h^2), where h is small.");
+		double rmax=30.0;
+		double rmin =0.05;
+		double delta_r = 0.05;
+		matrix Hl0=Create_H(delta_r,rmin,rmax);
+		matrix Hl1=Create_H(delta_r,rmin,rmax);
+		int H_n = Hl0.size1;
+		vector ustartn1 = new vector(H_n);
+		vector ustartn2l0= new vector(H_n);
+		vector ustartn2l1= new vector(H_n);
+		for (int i = 0; i < H_n; i++) {
+    			double r =rmin+ i*delta_r;
+    			ustartn1[i] = 2.0*r*Exp(-r)+0.1;
+			}
+                for (int i = 0; i < H_n; i++) {
+                	double r =rmin+ i*delta_r;
+                        ustartn2l0[i] = (r/Sqrt(2))*(1.0-r/2.0)*Exp(-r/2.0)+0.1;
+                         }
+                for (int i = 0; i < H_n; i++) {
+                	double r =rmin+ i *delta_r;
+                        ustartn2l1[i] = 1/Sqrt(24)*r*r * Exp(-r/2.0)+0.1;
+                        }
+		(vector un1,double E1,double timen1) = newton_eigenvaluefinder(ustartn1,-1/2.1,Hl0,1e-3,true);
+		(vector un2l0,double E2l0,double timen2l0) = newton_eigenvaluefinder(ustartn2l0,-1/8.1,Hl0,1e-3,true);
+		(vector un2l1,double E2l1,double timen2l1) =  newton_eigenvaluefinder(ustartn2l0,-1/8.1,Hl1,1e-3,true);
+		double utestn1 = (Hl0*un1).dot(Hl0*un1)-(E1*un1).dot(E1*un1);
+		double utestn2l0 = (Hl0*un2l0).dot(Hl0*un2l0)-(E2l0*un2l0).dot(E2l0*un2l0);
+		double utestn2l1 = (Hl1*un2l1).dot(Hl1*un2l1)-(E2l1*un2l1).dot(E2l1*un2l1);
+		WriteLine($"\n\nPart C)\n\n Calculating several lowest eigenfunctions of the hydrogen atom requires solving the eigenvalue problem Hu=Eu");
+		WriteLine("\nWhere H[i,i]=-1/h^2+l(l+1)/(2r[i]^2)-1/r_i and H[i,i±1]=1/(2h^2), where h is small.");
 		WriteLine("\nThis equation has been derived by expanding the derivatives of u the radial Schrödinger equation in atomic units.");
-		WriteLine("\nLike in our roots exercise, we choose rmax to be 20.0.");
-		WriteLine("\nWe calculate the n=1,2,3 lowest states of the Hydrogen atom, with all the allowed l values");
+		WriteLine($"\nLike in our roots exercise, we choose rmax to be {rmax} and rmin={rmin}");
+		WriteLine("\nWe calculate the n=1 l=0, n=2 l=0 and n=2 l=1  lowest states of the Hydrogen atom");
+		WriteLine($"\n These give us the energies {E1} {E2l0} and {E2l1} respectively (in hartrees)");
+		WriteLine($"\nAlso see that ||H_(l=0)*u_10||^2 - ||E_1*un1||^2={utestn1:F3},||H_(l=0)*u_20||^2 - ||E_2*u_20||^2={utestn2l0:F3}");
+		WriteLine($"\nand that |H_(l=1)*u_21||^2 - ||E2*u_21||^2={utestn2l0:F3}");
+		WriteLine("\nSo the wrong energies (they should be -1/2,-1/8,-1/8) are not due to the linesearch failing.");
+		WriteLine("\nRather it is likely due to needing better step length, smaller rmin and rmax which is not feasible as H becomes too large,");
+		WriteLine("\nOr a way to write H which enforces the boundary conditions better - namely u(rmin)=rmin-rmin^2");
+		WriteLine("\nA plot of the corresponding reduced radial wavefunctions can be found in Eigenfuncs.svg");
                 using (StreamWriter writer = new StreamWriter("Times.dat")){
-                	writer.WriteLine("#ns ts t(n)=n^2");
+                	writer.WriteLine("#ns ts");
                 	for(int i=1;i<10;i++){
                                 var ns = (double)nmax*i/10;
                                 var ts = timetoes[i-1];
                         	writer.WriteLine($"{ns} {ts}");
                                 }
                         }
+		using (StreamWriter writer = new StreamWriter("Eigenfuncs.dat")){
+			writer.WriteLine("#r #un1 #un2l0 #un2l1 #urealn1 #urealn2l0 #urealn2l1");
+			for(int i =0; i< un1.size; i++){
+				var r = rmin + (i)*delta_r;
+				var un1s=un1[i];
+				var un2l0s= un2l0[i];
+				var un2l1s= un2l1[i];
+				var un1r = 2.0*r*Exp(-r);
+				var un2l0r = (r/Sqrt(2))*(1.0-r/2.0)*Exp(-r/2.0);
+				var un2l1r = 1/Sqrt(24)*r*r * Exp(-r/2.0);
+				writer.WriteLine($"{r} {un1s} {un2l0s} {un2l1s} {un1r} {un2l0r} {un2l1r}");
+				}
+			}
 		return 0;
 		}//Main
 	}//Program
