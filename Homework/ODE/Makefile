@@ -37,13 +37,14 @@ Test_plot.gnu:
 	@echo "set key top right" >> $@
 	@echo "set xrange [*:*]" >> $@
 	@echo "set yrange [*:*]" >> $@
-	@echo "plot 'Test.dat' using 1:2 with lines title 'u', \\" >> $@
+	@echo "plot 'Test.dat' using 1:2 with points title 'u', \\" >> $@
+	@echo  "    'Test.dat' using 1:3 with lines lw 2 dashtype 2 title 'Sin(x)', \\" >> $@
 Pendulum_plot.gnu:
 	@echo "set terminal png" > $@
 	@echo "set output 'Pendulum_with_friction.png'" >> $@
 	@echo "set title 'Numerical Solution to pendulum with friction differential equation from scipy odeint'" >> $@
-	@echo "set xlabel 'x'" >> $@
-	@echo "set ylabel 'y'" >> $@
+	@echo "set xlabel 't'" >> $@
+	@echo "set ylabel 'theta'" >> $@
 	@echo "set grid" >> $@
 	@echo "set key top right" >> $@
 	@echo "set xrange [*:*]" >> $@

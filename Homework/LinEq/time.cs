@@ -56,6 +56,6 @@ public class Time{
 		var R = QRtup.Item2;
 		Q.print();
 		R.print();
-		return 1;
+		return 0;
 		}
 	}

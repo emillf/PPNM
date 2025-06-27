@@ -54,11 +54,12 @@ public class Program{
 		vector ystart = new vector(0,1);
 		var (xlist,ylist) = driver(F,(0,10.0),ystart);
 		using (StreamWriter writer = new StreamWriter("Test.dat")){
-        		writer.WriteLine("# xs ys");
+        		writer.WriteLine("# xs ys ysr");
                 	for(int i=0;i<xlist.size;i++){
                         	double xs = xlist[i];
 				double ys = ylist[i][0];
-                                writer.WriteLine($"{xs} {ys}");
+				double ysr = Sin(xs);
+                                writer.WriteLine($"{xs} {ys} {ysr}");
                                 		}
                         	}
 		Func<double, vector, vector> Pend = delegate(double x, vector y){
