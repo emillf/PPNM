@@ -38,13 +38,14 @@ analytical linesearch. This was done by Taylor expanding f(x-αΔx) to first ord
 minimizes ||f(x)+αJΔx||^2.
 
 Finally I do the linesearch to find eigenvectors and eigenvalues of H_(l=0) and H(l=1). I chose initial energies to be 1/(2n^2+0.1) and
-u_i - ureal_i = 0.1. I could not find a way to implement H such as to get better eigenvalues of the correct behaviour of u.
+u_i - ureal_i = 0.1. I could not find a way to implement H such as to get better eigenvalues or more correct behaviour of u.
 
  
 Self-evaluation:
 Part A and Part B were completed without any issues, so that would be 9 points. Part C) was not sufficiently completed in my opinion.
-I did investigate and implement an analytical linesearch, create a somewhat correct Hamiltonian, and plot several lowest eigenfunctions
-and find their energies. But the energies were only somewhat correct, and the eigenfunctions that I reached did not display the desired 
-behaviour close to r=0. I think this would net me 0.5 points, as I consider it a task half completed.
+I did investigate and implement an analytical linesearch, create a correct Hamiltonian, and plot several lowest eigenfunctions
+and find their energies. But the energies were wrong, and the eigenfunctions that I reached did quite display the desired 
+behaviour. I think this would net me 0.5 points, as I consider it a task half completed.
 
 Final score 9.5/10.  
+Final score from homeworks 9.5/10
