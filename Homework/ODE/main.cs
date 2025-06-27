@@ -15,6 +15,25 @@ public class Program{
 	vector δy = (k1-k0)*h;           /* error estimate */
 	return (yh,δy);
 	}
+	public static (vector, vector) rkstep23(
+    	Func<double, vector, vector> f, // the f from dy/dx = f(x, y)
+    	double x,                        // the current value of the variable
+    	vector y,                        // the current value y(x) of the sought function
+    	double h                         // the step to be taken
+	)
+	{
+	vector k1 = f(x, y);
+    	vector k2 = f(x + h * 0.5, y + h * 0.5 * k1);
+    	vector k3 = f(x + h * 0.75, y + h * 0.75 * k2);
+    	// 2nd order solution (lower order)
+    	vector y2 = y + h * (2.0/9.0 * k1 + 1.0/3.0 * k2 + 4.0/9.0 * k3);
+    	// Additional evaluation for 3rd order solution
+    	vector k4 = f(x + h, y2);
+    	// 3rd order solution (higher order)
+    	vector y3 = y + h * (7.0/24.0 * k1 + 0.25 * k2 + 1.0/3.0 * k3 + 1.0/8.0 * k4);
+    	vector δy = y3 - y2; // error estimate
+    	return (y3, δy); // return the higher order estimate and the error
+	}
 	public static (genlist<double>,genlist<vector>) driver(
 	Func<double,vector,vector> F,/* the f from dy/dx=f(x,y) */
 	(double,double) interval,    /* (initial-point,final-point) */
@@ -27,11 +46,11 @@ public class Program{
 	var (a,b)=interval; double x=a; vector y=yinit.copy();
 	var xlist=new genlist<double>(); xlist.add(x);
 	var ylist=new genlist<vector>(); ylist.add(y);
-	double hmax =(b-a)/500;
+	//double hmax =(b-a)/500;
 	do{
 		if(x>=b) return (xlist,ylist); /* job done */
 		if(x+h>b) h=b-x;               /* last step should end at b */
-		var (yh,δy) = rkstep12(F,x,y,h);
+		var (yh,δy) = rkstep23(F,x,y,h);
 		double tol = (acc+eps*yh.norm()) * Sqrt(h/(b-a));
 		double err = δy.norm();
 		if(err<=tol){ // accept step
@@ -41,9 +60,9 @@ public class Program{
 			}
 		if(err>0){
 			double factor = Min( Pow(tol/err,0.25)*0.95 , adj); // readjust stepsize
-			h=Min(h*factor,hmax); //enforce minimum step length
+	//		h=Min(h*factor,hmax); //enforce minimum step length
 			}
-		else h=Min(h*2,hmax); //enforce minimum step length
+	//	else h=Min(h*2,hmax); //enforce minimum step length
 		if(writeh==true) System.Console.WriteLine($"{h}");
 		}while(true);
 	}//driver
@@ -58,7 +77,7 @@ public class Program{
                 	for(int i=0;i<xlist.size;i++){
                         	double xs = xlist[i];
 				double ys = ylist[i][0];
-				double ysr = Sin(xs);
+				double ysr = Sin(xs)+0.1;
                                 writer.WriteLine($"{xs} {ys} {ysr}");
                                 		}
                         	}

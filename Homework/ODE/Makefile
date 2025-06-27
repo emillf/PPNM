@@ -37,8 +37,8 @@ Test_plot.gnu:
 	@echo "set key top right" >> $@
 	@echo "set xrange [*:*]" >> $@
 	@echo "set yrange [*:*]" >> $@
-	@echo "plot 'Test.dat' using 1:2 with points title 'u', \\" >> $@
-	@echo  "    'Test.dat' using 1:3 with lines lw 2 dashtype 2 title 'Sin(x)', \\" >> $@
+	@echo "plot 'Test.dat' using 1:2 with lines title 'u', \\" >> $@
+	@echo  "    'Test.dat' using 1:3 with lines lw 2 dashtype 2 title 'Sin(x)+0.1', \\" >> $@
 Pendulum_plot.gnu:
 	@echo "set terminal png" > $@
 	@echo "set output 'Pendulum_with_friction.png'" >> $@
