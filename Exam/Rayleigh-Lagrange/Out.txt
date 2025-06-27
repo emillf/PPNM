@@ -4,35 +4,24 @@ We generate a random 6x6 symmetric matrix A with values from 0 to 10
 
 A = 
 
-      8.06       6.76       9.31       3.27       8.61       5.89 
-      6.76       6.14       2.89       6.98       8.16       6.67 
-      9.31       2.89       1.12       3.49       7.64       3.96 
-      3.27       6.98       3.49       8.03        2.4      0.713 
-      8.61       8.16       7.64        2.4      0.257       6.16 
-      5.89       6.67       3.96      0.713       6.16      0.851 
-
-
-      6.06       6.76       9.31       3.27       8.61       5.89         -1 
-      6.76       4.14       2.89       6.98       8.16       6.67         -1 
-      9.31       2.89     -0.885       3.49       7.64       3.96         -1 
-      3.27       6.98       3.49       6.03        2.4      0.713         -1 
-      8.61       8.16       7.64        2.4      -1.74       6.16         -1 
-      5.89       6.67       3.96      0.713       6.16      -1.15         -1 
-         2          2          2          2          2          2          0 
-
-         1          1          1          1          1          1          2 
+      8.23       1.23       3.26       5.03       4.64       5.56 
+      1.23        3.7    0.00113       5.51       6.33       6.23 
+      3.26    0.00113       8.65       7.86       1.01        4.8 
+      5.03       5.51       7.86       6.51       1.46      0.775 
+      4.64       6.33       1.01       1.46       2.84       1.57 
+      5.56       6.23        4.8      0.775       1.57       0.41 
 
 Using our method with initial guesses v = (1,1,1,1,1,1) and λ = 2 we get:
 
-v =     0.367     -0.606      0.444      0.337       -0.1     -0.421 
+v =     0.228     -0.104     -0.408      0.632     0.0362     -0.608 
 
-λ =  2.03044510116884
+λ =  1.6998327769541
 
-If we calculate Av and λ*v we get in time 0.001066 s
+If we calculate Av and λ*v we get in time 0.0012305 s
 
-Av =      0.745      -1.23      0.901      0.685     -0.204     -0.855 
+Av =      0.388     -0.176     -0.693       1.07     0.0615      -1.03 
 
-λv =     0.745      -1.23      0.901      0.685     -0.204     -0.855 
+λv =     0.388     -0.176     -0.693       1.07     0.0615      -1.03 
 
 So the method works as we see Av = λv
 
@@ -49,7 +38,7 @@ and corresponding eigenvector entries v_j=sqrt(2/(n+1))*sin(j*k*pi/(n+1))
 This ensures well spaced eigenvalues and some offdiagonal terms. 
 I can thus choose λstart = 2 and vstart=(1,1,1,1,....)
 
-As can be seen in Time_plot time goes like O(n^2), so generally around n=400 it becomes unfeasible for my box
+As can be seen in Time_plot time goes polynomially, so generally around n=400 it becomes unfeasible for my box
 
 The exact time it becomes unfeasible also depends on the matrix choice and guess quality of course.
 
@@ -64,20 +53,23 @@ Where H[i,i]=-1/h^2+l(l+1)/(2r[i]^2)-1/r_i and H[i,i±1]=1/(2h^2), where h is sm
 
 This equation has been derived by using the central difference approximation on d^2u/dr^2 the radial Schrödinger equation in atomic units.
 
-Like in our roots exercise, we choose rmax to be 20 and rmin=0.001
+Like in our EVD exercise, we choose rmax to be 15 and dr =0.3
 
 We calculate the n=1 l=0, n=2 l=0 and n=2 l=1  lowest states of the Hydrogen atom
 
- These give us the energies -0.48757059107349 -0.16923311531217 and -0.154647983759755 respectively (in hartrees)
+ These give us the energies -22.7114554177103 -22.3459152443902 and -22.3471930048759 respectively (in hartrees)
 
-Also see that ||H_(l=0)*u_10||^2 - ||E_1*un1||^2=0.000,||H_(l=0)*u_20||^2 - ||E_2*u_20||^2=0.000
+Also see that ||H_(l=0)*u_10 - E_1*un1||^2=0.000,||H_(l=0)*u_20-E_2*u_20||^2=0.000
 
-and that |H_(l=1)*u_21||^2 - ||E2*u_21||^2=0.000
+and that |H_(l=1)*u_21-E2*u_21||^2=0.000
 
-So the wrong energies (they should be -1/2,-1/8,-1/8) are not due to the linesearch failing.
+So the wrong energies (they should be -1/2,-1/8,-1/8) are not due to the linesearch failing to find eigenvectors.
 
-Rather it is likely due to needing better step length, smaller rmin and rmax which is not feasible as H becomes too large,
+It is possibly due to needing better step length, smaller rmin and rmax which is not feasible as H becomes too large
 
-Or a way to write H which enforces the boundary conditions better
+Or perhaps the eigenvalue and eigenvector coupling the way I do newton, and that normalization puts too much weight on the tail.
+
+This would make sense since Energy seems to scale with rmax and inversely with dr
 
 A plot of the corresponding reduced radial wavefunctions can be found in Eigenfuncs_plot.svg
+their behaviour seems somewhat correct at least

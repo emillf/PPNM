@@ -25,7 +25,7 @@ Eigenfuncs_plot.gnu:
 	@echo "set ylabel 'u(r)'" >> $@
 	@echo "set xlabel 'r'" >> $@
 	@echo "set grid" >> $@
-	@echo "set xrange [0:20]" >> $@
+	@echo "set xrange [0:15]" >> $@
 	@echo "set multiplot layout 3,1 rowsfirst" >> $@
 	@echo "plot 'Eigenfuncs.dat' using 1:2 with lines title 'calculated u_{10}(r)', 'Eigenfuncs.dat' using 1:5 with lines lw 2 dashtype 2 title 'real u_{10}(r)'">>$@
 	@echo "plot 'Eigenfuncs.dat' using 1:3 with lines title 'calculated u_{20}(r)', 'Eigenfuncs.dat' using 1:6 with lines lw 2 dashtype 2 title ' real u_{20}(r)'">>$@

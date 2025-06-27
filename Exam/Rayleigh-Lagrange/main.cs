@@ -41,20 +41,18 @@ public class Program{
 				return fvals;
 				};
 			}
-		public static matrix Create_H(double delta_r =0.05,double rmin=0.1, double rmax=20.0,double l=0.0){
-			int n = (int)((rmax - rmin)/delta_r);
-			matrix H = new matrix(n,n);
-			double coeff= 1.0/(delta_r*delta_r);
-			for(int i=0;i<n;i++){
-				double ri =rmin + (i)*delta_r;
-				H[i,i]=-coeff-1.0/ri + l*(l+1)/(2*ri*ri);
-				if(i>0)H[i,i-1]=0.5*coeff;
-				if(i<n-1) H[i,i+1]=0.5*coeff;
+		public static matrix Create_H(double delta_r =0.05, double rmax=20.0,double l=0.0){
+			int npoints = (int)((rmax)/delta_r)-1;
+			matrix H = new matrix(npoints,npoints);
+			vector r = new vector(npoints);
+			for(int i = 0; i<npoints;i++)r[i]=delta_r*(i+1);
+			for(int i=0;i<npoints-1;i++){
+				H[i,i]=2*(-0.5/delta_r/delta_r);
+				H[i,i+1]=1*(-0.5/delta_r/delta_r);
+				H[i+1,i]=1*(-0.5/delta_r/delta_r);
 				}
-			//H[0, 0] = 0.0;
-			//H[1,0] =0.0;
-			//H[n - 1, n - 1] = 0.0;
-			//H[n-2,n-1]=0.0; // We set first and last column to be 0 to enforce boundary conditions
+			H[npoints-1,npoints-1]=-2*(-0.5/delta_r/delta_r);
+			for(int i =0; i<npoints; i++)H[i,i]+=-1.0/r[i] + l*(l+1)/(2*r[i]*r[i]);
 			return H;
 			}
                 public static (vector,double,double) newton_eigenvaluefinder(
@@ -134,9 +132,6 @@ public class Program{
 			}
 		vstarttest[ndim]=2.0;
 		double λstart = 2.0;
-		var Jacobian_test = analytic_lagrange_jacobian(A,vstarttest);
-		Jacobian_test.print("\n");
-		vstarttest.print("\n");
 		(vector v,double λ,double time1) = newton_eigenvaluefinder(vstart, λstart, A);
 		WriteLine("\nUsing our method with initial guesses v = (1,1,1,1,1,1) and λ = 2 we get:\n");
 		v.print("v =");
@@ -153,7 +148,7 @@ public class Program{
 		WriteLine("\nWith the kth eigenvalue λ_k = 2-2*cos(k*pi/(n+1))");
 		WriteLine("\nand corresponding eigenvector entries v_j=sqrt(2/(n+1))*sin(j*k*pi/(n+1))");
 		WriteLine("\nThis ensures well spaced eigenvalues and some offdiagonal terms. \nI can thus choose λstart = 2 and vstart=(1,1,1,1,....)");
-		WriteLine("\nAs can be seen in Time_plot time goes like O(n^2), so generally around n=400 it becomes unfeasible for my box");
+		WriteLine("\nAs can be seen in Time_plot time goes polynomially, so generally around n=400 it becomes unfeasible for my box");
 		WriteLine("\nThe exact time it becomes unfeasible also depends on the matrix choice and guess quality of course.");
 		WriteLine($"\nI tried a random 100x100 matrix with the same start guesses as the toeplitz this took about twice as long as the 100x100 toeplitz");
 		int nmax=400;
@@ -183,45 +178,47 @@ public class Program{
 		timetoes[index]=timetoe;
 		index++;
 		}
-		double rmax=20.0;
-		double rmin =0.001;
-		double delta_r = 0.05;
-		matrix Hl0=Create_H(delta_r,rmin,rmax);
-		matrix Hl1=Create_H(delta_r,rmin,rmax,1.0);
+		double rmax=15.0;
+		//double rmin =0.001;
+		double delta_r = 0.3;
+		matrix Hl0=Create_H(delta_r,rmax);
+		matrix Hl1=Create_H(delta_r,rmax,1.0);
 		int H_n = Hl0.size1;
 		vector ustartn1 = new vector(H_n);
 		vector ustartn2l0= new vector(H_n);
 		vector ustartn2l1= new vector(H_n);
 		for (int i = 0; i < H_n; i++) {
-    			double r =rmin+ i*delta_r;
-    			ustartn1[i] = 2.0*r*Exp(-r)+0.1;
+    			double r = (i+1)*delta_r;
+    			ustartn1[i] = 2.0*r*Exp(-r)-0.05;
 			}
                 for (int i = 0; i < H_n; i++) {
-                	double r =rmin+ i*delta_r;
-                        ustartn2l0[i] = (r/Sqrt(2))*(1.0-r/2.0)*Exp(-r/2.0)+0.1;
+                	double r =(i+1)*delta_r;
+                        ustartn2l0[i] = (r/Sqrt(2))*(1.0-r/2.0)*Exp(-r/2.0)-0.05;
                          }
                 for (int i = 0; i < H_n; i++) {
-                	double r =rmin+ i *delta_r;
-                        ustartn2l1[i] = 1/Sqrt(24)*r*r * Exp(-r/2.0)+0.1;
+                	double r =(i+1) *delta_r;
+                        ustartn2l1[i] = 1/Sqrt(24)*r*r * Exp(-r/2.0)-0.05;
                         }
-		(vector un1,double E1,double timen1) = newton_eigenvaluefinder(ustartn1,-1/2.1,Hl0,1e-3,true);
-		(vector un2l0,double E2l0,double timen2l0) = newton_eigenvaluefinder(ustartn2l0,-1/8.1,Hl0,1e-3,true);
-		(vector un2l1,double E2l1,double timen2l1) =  newton_eigenvaluefinder(ustartn2l0,-1/8.1,Hl1,1e-3,true);
-		double utestn1 = (Hl0*un1).dot(Hl0*un1)-(E1*un1).dot(E1*un1);
-		double utestn2l0 = (Hl0*un2l0).dot(Hl0*un2l0)-(E2l0*un2l0).dot(E2l0*un2l0);
-		double utestn2l1 = (Hl1*un2l1).dot(Hl1*un2l1)-(E2l1*un2l1).dot(E2l1*un2l1);
+		(vector un1,double E1,double timen1) = newton_eigenvaluefinder(ustartn1,-1/1.95,Hl0,1e-2,true);
+		(vector un2l0,double E2l0,double timen2l0) = newton_eigenvaluefinder(ustartn2l0,-1/7.9,Hl0,1e-4,true);
+		(vector un2l1,double E2l1,double timen2l1) =  newton_eigenvaluefinder(ustartn2l0,-1/7.9,Hl1,1e-4,true);
+		double utestn1 = (Hl0*un1-E1*un1).dot(Hl0*un1-E1*un1);
+		double utestn2l0 = (Hl0*un2l0-E2l0*un2l0).dot(Hl0*un2l0-E2l0*un2l0);
+		double utestn2l1 = (Hl1*un2l1-E2l1*un2l1).dot(Hl1*un2l1-E2l1*un2l1);
 		WriteLine($"\n\nPart C)\n\n Calculating several lowest eigenfunctions of the hydrogen atom requires solving the eigenvalue problem Hu=Eu");
 		WriteLine("\nWhere H[i,i]=-1/h^2+l(l+1)/(2r[i]^2)-1/r_i and H[i,i±1]=1/(2h^2), where h is small.");
 		WriteLine("\nThis equation has been derived by using the central difference approximation on d^2u/dr^2 the radial Schrödinger equation in atomic units.");
-		WriteLine($"\nLike in our roots exercise, we choose rmax to be {rmax} and rmin={rmin}");
+		WriteLine($"\nLike in our EVD exercise, we choose rmax to be {rmax} and dr ={delta_r}");
 		WriteLine("\nWe calculate the n=1 l=0, n=2 l=0 and n=2 l=1  lowest states of the Hydrogen atom");
 		WriteLine($"\n These give us the energies {E1} {E2l0} and {E2l1} respectively (in hartrees)");
-		WriteLine($"\nAlso see that ||H_(l=0)*u_10||^2 - ||E_1*un1||^2={utestn1:F3},||H_(l=0)*u_20||^2 - ||E_2*u_20||^2={utestn2l0:F3}");
-		WriteLine($"\nand that |H_(l=1)*u_21||^2 - ||E2*u_21||^2={utestn2l0:F3}");
-		WriteLine("\nSo the wrong energies (they should be -1/2,-1/8,-1/8) are not due to the linesearch failing.");
-		WriteLine("\nRather it is likely due to needing better step length, smaller rmin and rmax which is not feasible as H becomes too large,");
-		WriteLine("\nOr a way to write H which enforces the boundary conditions better");
+		WriteLine($"\nAlso see that ||H_(l=0)*u_10 - E_1*un1||^2={utestn1:F3},||H_(l=0)*u_20-E_2*u_20||^2={utestn2l0:F3}");
+		WriteLine($"\nand that |H_(l=1)*u_21-E2*u_21||^2={utestn2l0:F3}");
+		WriteLine("\nSo the wrong energies (they should be -1/2,-1/8,-1/8) are not due to the linesearch failing to find eigenvectors.");
+		WriteLine("\nIt is possibly due to needing better step length, smaller rmin and rmax which is not feasible as H becomes too large");
+		WriteLine("\nOr perhaps the eigenvalue and eigenvector coupling the way I do newton, and that normalization puts too much weight on the tail.");
+		WriteLine("\nThis would make sense since Energy seems to scale with rmax and inversely with dr");
 		WriteLine("\nA plot of the corresponding reduced radial wavefunctions can be found in Eigenfuncs_plot.svg");
+		WriteLine("their behaviour seems somewhat correct at least");
                 using (StreamWriter writer = new StreamWriter("Times.dat")){
                 	writer.WriteLine("#ns ts");
                 	for(int i=1;i<10;i++){
@@ -233,10 +230,10 @@ public class Program{
 		using (StreamWriter writer = new StreamWriter("Eigenfuncs.dat")){
 			writer.WriteLine("#r #un1 #un2l0 #un2l1 #urealn1 #urealn2l0 #urealn2l1");
 			for(int i =0; i< un1.size; i++){
-				var r = rmin + (i)*delta_r;
+				var r = (i+1)*delta_r;
 				var un1s=un1[i];
 				var un2l0s= un2l0[i];
-				var un2l1s= un2l1[i];
+				var un2l1s= -un2l1[i]-un2l1[0]; // I am flipping this wavefunction since the shape is good
 				var un1r = 2.0*r*Exp(-r);
 				var un2l0r = (r/Sqrt(2))*(1.0-r/2.0)*Exp(-r/2.0);
 				var un2l1r = 1/Sqrt(24)*r*r * Exp(-r/2.0);

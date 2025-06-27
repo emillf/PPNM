@@ -4,7 +4,7 @@ set title 'Calculated lowest energy reduced radial hydrogen eigenfunctions vs re
 set ylabel 'u(r)'
 set xlabel 'r'
 set grid
-set xrange [0:20]
+set xrange [0:15]
 set multiplot layout 3,1 rowsfirst
 plot 'Eigenfuncs.dat' using 1:2 with lines title 'calculated u_{10}(r)', 'Eigenfuncs.dat' using 1:5 with lines lw 2 dashtype 2 title 'real u_{10}(r)'
 plot 'Eigenfuncs.dat' using 1:3 with lines title 'calculated u_{20}(r)', 'Eigenfuncs.dat' using 1:6 with lines lw 2 dashtype 2 title ' real u_{20}(r)'
